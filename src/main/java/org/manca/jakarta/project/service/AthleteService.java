@@ -1,9 +1,9 @@
-package org.eclipse.jakarta.hello.service;
+package org.manca.jakarta.project.service;
 
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
-import org.eclipse.jakarta.hello.dao.AthleteDao;
-import org.eclipse.jakarta.hello.model.Athlete;
+import org.manca.jakarta.project.dao.AthleteDao;
+import org.manca.jakarta.project.model.Athlete;
 
 import java.util.List;
 

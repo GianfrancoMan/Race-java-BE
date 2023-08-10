@@ -1,4 +1,4 @@
-package org.eclipse.jakarta.hello.model.util;
+package org.manca.jakarta.project.model.util;
 
 import java.time.LocalTime;
 /*

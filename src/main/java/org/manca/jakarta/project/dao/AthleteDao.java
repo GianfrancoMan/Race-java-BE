@@ -1,4 +1,4 @@
-package org.eclipse.jakarta.hello.dao;
+package org.manca.jakarta.project.dao;
 
 import jakarta.ejb.EJBException;
 import jakarta.enterprise.context.Dependent;
@@ -6,8 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
-import jakarta.servlet.ServletException;
-import org.eclipse.jakarta.hello.model.Athlete;
+import org.manca.jakarta.project.model.Athlete;
 
 import java.util.List;
 

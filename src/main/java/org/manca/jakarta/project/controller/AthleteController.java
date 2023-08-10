@@ -1,12 +1,11 @@
-package org.eclipse.jakarta.hello.controller;
+package org.manca.jakarta.project.controller;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import org.eclipse.jakarta.hello.model.Athlete;
-import org.eclipse.jakarta.hello.service.AthleteService;
+import org.manca.jakarta.project.model.Athlete;
+import org.manca.jakarta.project.service.AthleteService;
 
-import java.time.LocalDate;
 import java.util.List;
 
 

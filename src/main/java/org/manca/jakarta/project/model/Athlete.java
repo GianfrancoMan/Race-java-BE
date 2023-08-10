@@ -1,8 +1,6 @@
-package org.eclipse.jakarta.hello.model;
+package org.manca.jakarta.project.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.Constraint;
-import jakarta.validation.Validation;
 
 import java.time.LocalDate;
 /*

@@ -1,8 +1,8 @@
-package org.eclipse.jakarta.hello.service.util;
+package org.manca.jakarta.project.service.util;
 
-import org.eclipse.jakarta.hello.model.util.Category;
-import org.eclipse.jakarta.hello.model.util.Race;
-import org.eclipse.jakarta.hello.model.util.RawAthlete;
+import org.manca.jakarta.project.model.util.Category;
+import org.manca.jakarta.project.model.util.Race;
+import org.manca.jakarta.project.model.util.RawAthlete;
 
 import java.util.List;
 
