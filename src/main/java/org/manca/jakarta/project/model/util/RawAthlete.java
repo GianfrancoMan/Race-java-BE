@@ -1,5 +1,7 @@
 package org.manca.jakarta.project.model.util;
 
+import org.manca.jakarta.project.model.Category;
+
 import java.time.LocalTime;
 
 /*
@@ -8,13 +10,20 @@ import java.time.LocalTime;
     ZIONE L'ATTRIBUTO 'category' INDICA LA CATEGORIA DI APPARTENENZA DELL'ATLTETA IN GARA.
  */
 public class RawAthlete {
+    // Declarations
     private long idAthlete;
 
     private String raceNumber;
     private Category category;
-
     private LocalTime[] timeOnLaps;
-    public RawAthlete() { }
+    private boolean state;
+
+    // Constructor
+    public RawAthlete() {
+        setState(false);
+    }
+
+    //GETTER AND SETTER
 
     public long getIdAthlete() {
         return idAthlete;
@@ -39,5 +48,13 @@ public class RawAthlete {
     public void setCategory(Category category) {
         this.category = category;
         timeOnLaps= new LocalTime[category.getLapsNumber()];
+    }
+
+    public boolean isState() {
+        return state;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
     }
 }
