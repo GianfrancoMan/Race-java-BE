@@ -23,9 +23,9 @@ public class AthleteService {
 
     public boolean saveAthlete(Athlete athlete) {
         this.makeLowerCase(athlete);
-        Athlete pesistAthlete =  ad.save(athlete);
-        if(pesistAthlete!=null) {
-            AthleteService.lastPersistId = pesistAthlete.getId();
+        Athlete persistAthlete =  ad.save(athlete);
+        if(persistAthlete!=null) {
+            AthleteService.lastPersistId = persistAthlete.getId();
             return true;
         }
         return false;

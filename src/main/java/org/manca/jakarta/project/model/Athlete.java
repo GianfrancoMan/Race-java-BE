@@ -1,8 +1,11 @@
 package org.manca.jakarta.project.model;
 
+import jakarta.mail.util.LineInputStream;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
+
 /*
 La classe 'Athlete' finge da Entity Model per la tabella 'Athletes' del database 'race'.
 I dati completi degli atleti verranno memorizzati nel database, inoltre questa classe è
@@ -17,7 +20,7 @@ public class Athlete {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	@Column(name = "firstname")
 	private String firstname;
 	@Column(name = "lastname")
@@ -28,17 +31,19 @@ public class Athlete {
 	private String city;
 	@Column(name = "team")
 	private String team;
+	@ManyToMany(mappedBy = "athletes")
+	List<Race> races;
 	
 	public Athlete() {}
 
-	public long getId() {
+	// GETTER and SETTER
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-
 	public String getFirstname() {
 		return firstname;
 	}
@@ -77,6 +82,14 @@ public class Athlete {
 
 	public void setTeam(String team) {
 		this.team = team;
+	}
+
+	public List<Race> getRaces() {
+		return races;
+	}
+
+	public void setRaces(List<Race> races) {
+		this.races = races;
 	}
 
 	@Override
