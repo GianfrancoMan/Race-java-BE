@@ -25,7 +25,7 @@ public class Category {
     private short lapsNumber;
     @Column(name = "start_time")
     private LocalTime raceStartTime;
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "raceCategories")
     List<Race> races;
 
 
@@ -76,5 +76,16 @@ public class Category {
 
     public void setRaces(List<Race> races) {
         this.races = races;
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", lapsNumber=" + lapsNumber +
+                ", raceStartTime=" + raceStartTime +
+                ", races=" + races +
+                '}';
     }
 }

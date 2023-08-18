@@ -7,7 +7,7 @@ import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.service.AthleteService;
 
 import java.util.List;
-@Path("/go")
+@Path("/athl")
 public class AthleteController {
 
 	/*Only to check if the app configuration is fine and if it  works */
