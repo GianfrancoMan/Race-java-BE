@@ -29,7 +29,7 @@ public class Race {
     @Column(name = "date_time")
     private LocalDateTime raceDateTime;
     @ManyToMany
-    private List<Category> categories;
+    private List<Category> raceCategories;
     @ManyToMany
     private List<Athlete> athletes;
 
@@ -79,11 +79,11 @@ public class Race {
     }
 
     public List<Category> getCategories() {
-        return categories;
+        return raceCategories;
     }
 
     public void setCategories(List<Category> categories) {
-        this.categories = categories;
+        this.raceCategories = categories;
     }
 
     public List<Athlete> getAthletes() {
