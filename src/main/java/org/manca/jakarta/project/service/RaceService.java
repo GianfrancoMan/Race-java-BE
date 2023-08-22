@@ -47,6 +47,34 @@ public class RaceService {
         return rd.update(race);
     }
 
+    public boolean removeCategoryFromRace(Long raceId, Long categoryId) {
+        if(raceId >= 1 && categoryId >= 1)
+            return rd.removeCategory(raceId, categoryId);
+        else
+            return false;
+    }
+
+    public boolean removeAthleteFromRace(Long raceId, Long athleteId) {
+        if(raceId >= 1 && athleteId >= 1)
+            return rd.removeAthlete(raceId, athleteId);
+        else
+            return false;
+    }
+
+    public List<Category> getAllRaceCategories(Long raceId) {
+        if(raceId >= 1)
+            return rd.findRaceCategories(raceId);
+        else
+            return null;
+    }
+
+    public List<Athlete> getAllRaceAthletes(Long raceId) {
+        if(raceId >= 1)
+            return rd.findRaceAthletes(raceId);
+        else
+            return null;
+    }
+
     private void makeLowerCase(Race race) {
         race.setCity(race.getCity().toLowerCase());
         race.setPlace(race.getPlace().toLowerCase());

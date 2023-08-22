@@ -3,6 +3,7 @@ package org.manca.jakarta.project.model;
 import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.mail.util.LineInputStream;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -23,11 +24,11 @@ public class Athlete {
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	@Column(name = "firstname")
+	@Column(name = "firstname", nullable = false)
 	private String firstname;
-	@Column(name = "lastname")
+	@Column(name = "lastname", nullable = false)
 	private String lastname;
-	@Column(name = "birth_date")
+	@Column(name = "birth_date", nullable = false)
 	private LocalDate birthDate;
 	@Column(name = "city")
 	private String city;

@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.manca.jakarta.project.model.Athlete;
+import org.manca.jakarta.project.model.Category;
 import org.manca.jakarta.project.model.Race;
 import org.manca.jakarta.project.service.RaceService;
 import java.util.List;
@@ -54,4 +55,37 @@ public class RaceController {
     public Race update(Race race) {
         return rs.updateRace(race);
     }
+
+    @PUT
+    @Path("/rmv/ctg")
+    public boolean removeCategory(
+            @QueryParam("raceId") Long raceId,
+            @QueryParam("categoryId") Long categoryId) {
+
+        return rs.removeCategoryFromRace(raceId, categoryId);
+    }
+
+    @PUT
+    @Path("/rmv/athl")
+    public boolean removeAthlete(
+            @QueryParam("raceId") Long raceId,
+            @QueryParam("athleteId") Long athleteId ){
+
+        return rs.removeAthleteFromRace(raceId, athleteId);
+    }
+
+    @GET
+    @Path("/race/ctgs")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Category> raceCategories(@QueryParam("raceId") Long raceId) {
+        return rs.getAllRaceCategories(raceId);
+    }
+
+    @GET
+    @Path("/race/athls")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Athlete> raceAthletes(@QueryParam("raceId") Long raceId) {
+        return rs.getAllRaceAthletes(raceId);
+    }
+
 }
