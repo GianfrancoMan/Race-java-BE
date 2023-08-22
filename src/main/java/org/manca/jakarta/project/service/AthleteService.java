@@ -1,7 +1,9 @@
 package org.manca.jakarta.project.service;
 
 import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.manca.jakarta.project.dao.AthleteDao;
 import org.manca.jakarta.project.model.Athlete;
 

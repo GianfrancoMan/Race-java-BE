@@ -28,9 +28,7 @@ public class AthleteDao {
     public Athlete save(Athlete athlete) {
         try {
             em.persist(athlete);
-            em.flush();
-            Athlete persistAthlete = em.find(Athlete.class, athlete.getId());
-            return persistAthlete;
+            return athlete;
         } catch (EJBException e) {
             return null;
         }

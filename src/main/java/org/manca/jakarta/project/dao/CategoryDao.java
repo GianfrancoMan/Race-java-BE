@@ -25,7 +25,6 @@ public class CategoryDao {
      */
     public Category findById(long id) {
         Category result = em.find(Category.class, id);
-        System.out.println(result);
         return result;
     }
 
@@ -34,9 +33,7 @@ public class CategoryDao {
      */
     public Category save(Category category ) {
         em.persist(category);
-        em.flush();
-        Category persisted = this.findById(category.getId());
-        return persisted;
+        return category;
     }
 
     /*
