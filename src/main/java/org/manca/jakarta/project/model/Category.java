@@ -1,5 +1,6 @@
 package org.manca.jakarta.project.model;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;
@@ -25,59 +26,44 @@ public class Category {
     private short lapsNumber;
     @Column(name = "start_time")
     private LocalTime raceStartTime;
-    @ManyToMany(mappedBy = "raceCategories")
+    @JsonbTransient
+    @ManyToMany(mappedBy = "categories")
     List<Race> races;
-
-
-
-    public Category() { }
-
-    public Category(String title, short lapsNumber, LocalTime raceStartTime) {
-        this.title = title;
-        this.lapsNumber = lapsNumber;
-        this.raceStartTime = raceStartTime;
-    }
 
     // GETTER and SETTER
     public Long getId() {
         return id;
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
     public String getTitle() {
         return title;
     }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public short getLapsNumber() {
         return lapsNumber;
     }
-
-    public void setLapsNumber(short lapsNumber) {
-        this.lapsNumber = lapsNumber;
-    }
-
     public LocalTime getRaceStartTime() {
         return raceStartTime;
     }
-
-    public void setRaceStartTime(LocalTime raceStartTime) {
-        this.raceStartTime = raceStartTime;
-    }
-
     public List<Race> getRaces() {
         return races;
     }
-
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public void setLapsNumber(short lapsNumber) {
+        this.lapsNumber = lapsNumber;
+    }
+    public void setRaceStartTime(LocalTime raceStartTime) {
+        this.raceStartTime = raceStartTime;
+    }
     public void setRaces(List<Race> races) {
         this.races = races;
     }
-
+    public void addRace(Race race) {
+        getRaces().add(race);
+    }
     @Override
     public String toString() {
         return "Category{" +

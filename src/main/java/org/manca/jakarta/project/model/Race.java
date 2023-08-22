@@ -2,7 +2,9 @@ package org.manca.jakarta.project.model;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -14,8 +16,9 @@ import java.util.List;
 @Entity
 @Table(name="races")
 @Cacheable(false)
-public class Race {
+public class Race implements Serializable {
     //declaration
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,66 +31,66 @@ public class Race {
     private String city;
     @Column(name = "date_time")
     private LocalDateTime raceDateTime;
-    @ManyToMany
-    private List<Category> raceCategories;
-    @ManyToMany
-    private List<Athlete> athletes;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "race_category",
+            joinColumns =  @JoinColumn(name = "race_id", referencedColumnName = "id") ,
+            inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
+    private List<Category> categories= new ArrayList<>();
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "race_athlete",
+            joinColumns = @JoinColumn(name = "race_id", referencedColumnName = "id") ,
+            inverseJoinColumns = @JoinColumn(name = "athlete_id", referencedColumnName = "id"))
+    private List<Athlete> athletes= new ArrayList<>();
 
     //Constructor
-    public Race() {
-    }
 
     // Getter and Setter
-
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public String getPlace() {
         return place;
     }
-
-    public void setPlace(String place) {
-        this.place = place;
-    }
-
     public String getCity() {
         return city;
     }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public LocalDateTime getRaceDateTime() {
         return raceDateTime;
     }
-
+    public List<Category> getCategories() {
+        return categories;
+    }
+    public List<Athlete> getAthletes() {
+        return athletes;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public void setPlace(String place) {
+        this.place = place;
+    }
+    public void setCity(String city) {
+        this.city = city;
+    }
     public void setRaceDateTime(LocalDateTime raceDateTime) {
         this.raceDateTime = raceDateTime;
     }
 
-    public List<Category> getCategories() {
-        return raceCategories;
-    }
-
     public void setCategories(List<Category> categories) {
-        this.raceCategories = categories;
-    }
-
-    public List<Athlete> getAthletes() {
-        return athletes;
+        this.categories = categories;
     }
 
     public void setAthletes(List<Athlete> athletes) {
@@ -97,9 +100,10 @@ public class Race {
     //others
     public void addAthlete(Athlete athlete) {
         this.getAthletes().add(athlete);
+        athlete.addRace(this);
     }
-
     public void addCategory(Category category) {
         this.getCategories().add(category);
+        category.addRace(this);
     }
 }

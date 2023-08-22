@@ -1,4 +1,4 @@
-package org.manca.jakarta.project.model.util;
+package org.manca.jakarta.project.util;
 
 import org.manca.jakarta.project.model.Category;
 
