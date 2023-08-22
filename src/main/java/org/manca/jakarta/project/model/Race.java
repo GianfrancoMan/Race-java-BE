@@ -23,13 +23,13 @@ public class Race implements Serializable {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "place")
     private String place;
     @Column(name = "city")
     private String city;
-    @Column(name = "date_time")
+    @Column(name = "date_time", nullable = false)
     private LocalDateTime raceDateTime;
 
     @ManyToMany(cascade = { CascadeType.ALL })
