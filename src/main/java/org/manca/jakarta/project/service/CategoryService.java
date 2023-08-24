@@ -57,4 +57,17 @@ public class CategoryService {
         }
         return null;
     }
+
+    /**
+     * Implements pagination to get all categories of the race that have the string 'subTitle' passed as parameter
+     * ito their title.
+     * Pagination leverage on 'pageNumber' and 'pageSize' passed as parameter
+     * Returns a List of Category objects if success else null.
+     */
+    public List<Category> findCategoriesBySubTitle(String subTitle, int pageNumber, int pageSize) {
+        if(subTitle != null && pageNumber != 0 && pageSize != 0) {
+            return cd.categoriesBySubTitle(subTitle, pageNumber, pageSize);
+        }
+        return null;
+    }
 }

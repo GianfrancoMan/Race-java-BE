@@ -2,12 +2,12 @@ package org.manca.jakarta.project.dao;
 
 import jakarta.ejb.EJBException;
 import jakarta.enterprise.context.Dependent;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
+import jakarta.enterprise.inject.Typed;
+import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 import org.manca.jakarta.project.model.Athlete;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Dependent
@@ -97,6 +97,48 @@ public class AthleteDao {
         } catch (NoResultException | IllegalArgumentException e) {
 
             return false;
+        }
+    }
+
+    /**
+     * Implements pagination to get all athletes of the race that have the string 'subName' passed as parameter
+     * ito their complete name.
+     * Pagination leverage on 'pageNumber' and 'pageSize' passed as parameter
+     * Returns a List of Athletes objects if success else null.
+     */
+    public List<Athlete> athletesBySubName(String subName, int pageNumber, int pageSize) {
+        var queryString = "SELECT a FROM Athlete a ";
+        queryString += "WHERE a.firstname LIKE CONCAT('%', :sub_name, '%') ";
+        queryString += "OR a.lastname LIKE CONCAT('%', :sub_name, '%') ";
+        queryString += "ORDER BY a.lastname";
+        TypedQuery<Athlete> query = em.createQuery(
+                queryString,
+                Athlete.class);
+        query.setParameter("sub_name", subName);
+        query.setFirstResult((pageNumber-1) * pageSize);
+        query.setMaxResults(pageSize);
+        try {
+            return query.getResultList();
+        } catch (EJBException | NullPointerException e) {
+            System.out.println("CUSTOM ERROR: org.manca.jakarta.project.dao.AthleteDao.athletesBySubName[Pagination Failed]");
+            return null;
+        }
+    }
+
+    /**
+     * find all athletes that hav the birthdate equal to the 'birthdate' reference passed as parameter in the form of a LocalDate
+     * instance.
+     * Returns a List of Athletes objects if success else null.
+     */
+    public List<Athlete> athletesByDate(LocalDate birthdate) {
+        TypedQuery<Athlete> query = em.createQuery(
+                "SELECT a FROM Athlete a WHERE a.birthDate=:birthdate",
+                Athlete.class);
+        query.setParameter("birthdate", birthdate);
+        try {
+            return query.getResultList();
+        }catch (EJBException |NullPointerException e) {
+            return null;
         }
     }
 }

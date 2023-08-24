@@ -1,10 +1,10 @@
 package org.manca.jakarta.project.dao;
 
+import jakarta.ejb.EJBException;
 import jakarta.enterprise.context.Dependent;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaQuery;
+import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.model.Category;
 
 import java.util.List;
@@ -57,6 +57,31 @@ public class CategoryDao {
 
         } catch (NoResultException | IllegalArgumentException e) {
             return false;
+        }
+    }
+
+    /**
+     * Implements pagination to get all categories of the race that have the string 'subTitle' passed as parameter
+     * ito their title.
+     * Pagination leverage on 'pageNumber' and 'pageSize' passed as parameter
+     * Returns a List of Category objects if success else null.
+     */
+    public List<Category> categoriesBySubTitle(String subTitle,  int pageNumber, int pageSize) {
+        subTitle = subTitle.translateEscapes();
+
+        var queryString = "SELECT c FROM Category c ";
+        queryString += "WHERE c.title LIKE CONCAT('%', :sub_title, '%') ";
+        TypedQuery<Category> query = em.createQuery(
+                queryString,
+                Category.class);
+        query.setParameter("sub_title", subTitle);
+        query.setFirstResult( (pageNumber-1) * pageSize );
+        query.setMaxResults(pageSize);
+        try {
+            return query.getResultList();
+        } catch (EJBException | NullPointerException e) {
+            System.out.println("CUSTOM ERROR: org.manca.jakarta.project.dao.CategoryDao.categoriesBySubTitle[Pagination Failed]");
+            return null;
         }
     }
 }

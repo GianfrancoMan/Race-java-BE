@@ -3,6 +3,7 @@ package org.manca.jakarta.project.controller;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.model.Category;
 import org.manca.jakarta.project.service.CategoryService;
 
@@ -51,5 +52,14 @@ public class CategoryController {
     @Produces({ MediaType.APPLICATION_JSON })
     public Category getById(@QueryParam("id") long id) {
         return cs.findCategoryById(id);
+    }
+    @GET
+    @Path(value = "/sbt")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Category> getBySubName(
+            @QueryParam(value = "subTitle") String subTitle,
+            @QueryParam(value = "pageNumber") int pageNumber,
+            @QueryParam(value = "pageSize") int pageSize) {
+        return cs.findCategoriesBySubTitle(subTitle, pageNumber, pageSize);
     }
 }

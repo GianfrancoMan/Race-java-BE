@@ -1,20 +1,16 @@
 package org.manca.jakarta.project.service;
 
 import jakarta.ejb.Stateless;
-import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import org.manca.jakarta.project.dao.AthleteDao;
 import org.manca.jakarta.project.model.Athlete;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Stateless
 public class AthleteService {
-    //this static attribute is going to contain the last id created in the athletes table
-    // the idea is to use this value each time I need to create RawAthlete instance
-    // because it needs to know the athlete's id that it is bound
-    private static long lastPersistId = 0;
 
     @Inject
     private AthleteDao ad;
@@ -26,11 +22,7 @@ public class AthleteService {
     public boolean saveAthlete(Athlete athlete) {
         this.makeLowerCase(athlete);
         Athlete persistAthlete =  ad.save(athlete);
-        if(persistAthlete!=null) {
-            AthleteService.lastPersistId = persistAthlete.getId();
-            return true;
-        }
-        return false;
+        return persistAthlete != null;
     }
 
     public Athlete findAthlete(long id) {
@@ -46,6 +38,37 @@ public class AthleteService {
         return ad.delete(id);
     }
 
+    /**
+     * find all athletes that hav the birthdate equal to the 'birthdate' passed as parameter in the form of a string
+     * return a List of Athlete objects if success else null.
+     */
+    public List<Athlete> findAthletesByBirthDate(String birthdate) {
+        LocalDate birthDate = null;
+        if(birthdate != null) {
+            try {
+                birthDate = LocalDate.parse(birthdate);
+                return ad.athletesByDate(birthDate);
+            } catch (DateTimeParseException e) {
+                System.out.println("CUSTOM ERROR: org.manca.jakarta.project.service.AthleteService.findAthletesByBirthDate[Date Parsing Failed]");
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Implements pagination to get all athletes of the race that have the string 'subName' passed as parameter
+     * ito their complete name.
+     * Pagination leverage on 'pageNumber' and 'pageSize' passed as parameter
+     * Returns a List of Athletes objects if success else null.
+     */
+    public List<Athlete> findAthletesBySubName(String subName, int pageNumber, int pageSize) {
+        if(subName != null) {
+            return ad.athletesBySubName(subName, pageNumber, pageSize);
+        }
+        return null;
+    }
+
     /*To make lowercase the string attribute in 'Athlete' instance*/
     private void makeLowerCase(Athlete athlete) {
         athlete.setTeam(athlete.getTeam().toLowerCase());
@@ -54,7 +77,4 @@ public class AthleteService {
         athlete.setLastname(athlete.getLastname().toLowerCase());
     }
 
-    public static long getLastPersistId() {
-        return lastPersistId;
-    }
 }
