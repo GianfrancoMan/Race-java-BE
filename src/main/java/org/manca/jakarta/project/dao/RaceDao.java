@@ -10,7 +10,6 @@ import org.manca.jakarta.project.model.Category;
 import org.manca.jakarta.project.model.Race;
 
 import java.util.List;
-import java.util.Objects;
 
 @Dependent
 public class RaceDao {
@@ -18,7 +17,10 @@ public class RaceDao {
     @PersistenceContext(unitName = "race")
     private EntityManager em;
 
-    /* Persists Race object in the related  table based on the mapping */
+    /**
+     *  Persists Race object in the related  table based on the mapping
+     *  return a reference for the Race instance
+     */
     public Race save(Race race) {
         try {
             em.persist(race);
@@ -29,7 +31,10 @@ public class RaceDao {
         }
     }
 
-    /* Find all races stored and returns them as a list of Race object */
+    /**
+     * Find all races stored and returns them as a list of Race objects if success,
+     * else return null.
+     */
     public List<Race> findAll() {
         try {
             CriteriaQuery<Race> query = em.getCriteriaBuilder().createQuery(Race.class);
@@ -41,13 +46,19 @@ public class RaceDao {
         }
     }
 
-    /* Find a specific Race by its id*/
+    /**
+     * Find a specific Race by its id
+     * return a reference for the Race instance found if success else null.
+     */
     public Race findById(Long id) {
         Race result = em.find(Race.class, id);
         return result;
     }
 
-    /* Refresh a race entity changed*/
+    /**
+     *  Refresh a race with the state of the race passes as parameter
+     *  returns the refreshed race if success else return null.
+     */
     public Race update(Race race) {
         try {
             return em.merge(race);
@@ -55,7 +66,10 @@ public class RaceDao {
             return null;
         }
     }
-
+    /**
+     * Adds the athlete which has id equal to 'athleteId' to the race which has id equal to 'raceId'
+     * return boolean true if success else false.
+     */
     public boolean addAthlete(Long raceId, Long athleteId) {
         try {
             Race race = em.find(Race.class, raceId);
@@ -72,6 +86,10 @@ public class RaceDao {
         }
     }
 
+    /**
+     * remove the athlete which has id equal to 'athleteId' from the race which has the id equal to 'raceId'
+     * return boolean true if success else false.
+     */
     public boolean removeAthlete(Long raceId, Long athleteId) {
         var check = false;
         try {
@@ -91,6 +109,10 @@ public class RaceDao {
             return false;
         }
     }
+    /**
+     * Adds the category which has id equal to 'categoryId' to the race which has id equal to 'raceId'
+     * return boolean true if success else false.
+     */
     public boolean addCategory(Long raceId, Long categoryId) {
         try {
             Race race = em.find(Race.class, raceId);
@@ -108,6 +130,10 @@ public class RaceDao {
         }
     }
 
+    /**
+     * remove the category which has id equal to 'categoryId' from the race which has the id equal to 'raceId'
+     * return boolean true if success else false.
+     */
     public boolean removeCategory(Long raceId, Long categoryId) {
         var check = false;
         try {
@@ -127,7 +153,10 @@ public class RaceDao {
         }
     }
 
-    //TODO implements caller methods in service and controller
+    /**
+     * returns all athletes of the race which has the id equal to 'raceId'
+     * or null if fails.
+     */
     public List<Athlete> findRaceAthletes(Long raceId) {
         try {
             return em.find(Race.class, raceId).getAthletes();
@@ -136,6 +165,10 @@ public class RaceDao {
         }
     }
 
+    /**
+     * return all categories of the race which has the id equal to 'raceId'
+     * or null if fails
+     */
     public List<Category> findRaceCategories(Long raceId) {
         try {
             return em.find(Race.class, raceId).getCategories();
@@ -145,10 +178,11 @@ public class RaceDao {
     }
 
 
-    /*
-    * It works only with Athlete or Category instances and check whether the id passed as parameter
-    * is already present in the both athlete list or category list of the race.
-    */
+    /**
+     * It works only with Athlete or Category instances and check whether the id passed as parameter
+     * is already present in the both athlete list or category list of the race.
+     * return a boolean true if id already exists else false.
+     */
     private boolean checkAlreadyPresent(List items, Long id) {
         Athlete athlete = null;
         Category category = null;

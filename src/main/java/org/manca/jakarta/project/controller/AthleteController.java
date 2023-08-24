@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.service.AthleteService;
 
+import java.time.LocalDate;
 import java.util.List;
 @Path("/athl")
 public class AthleteController {
@@ -50,5 +51,32 @@ public class AthleteController {
 	@Path(value = "/athlete")
 	public Athlete getById(@QueryParam("id") long id) {
 		return as.findAthlete(id);
+	}
+
+	/**
+	 * find all athletes that hava the birthdate equal to the 'birthdate' passed as parameter in the form of a string
+	 * return a List of Athlete objects if success else null.
+	 */
+	@GET
+	@Path(value = "/birthed")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Athlete> getByBirthDate(@QueryParam("birthDate") String birthDate) {
+		return as.findAthletesByBirthDate(birthDate);
+	}
+
+	/**
+	 * Implements pagination to get all athletes of the race that have the string 'subName' passed as parameter
+	 * ito their complete name.
+	 * Pagination leverage on 'pageNumber' and 'pageSize' passed as parameter
+	 * Returns a List of Athletes objects if success else null.
+	 */
+	@GET
+	@Path(value = "sbn")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Athlete> getBySubName(
+			@QueryParam(value = "subName") String subName,
+			@QueryParam(value = "pageNumber") int pageNumber,
+			@QueryParam(value = "pageSize") int pageSize) {
+		return as.findAthletesBySubName(subName, pageNumber, pageSize);
 	}
 }
