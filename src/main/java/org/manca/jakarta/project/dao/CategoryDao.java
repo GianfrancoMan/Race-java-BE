@@ -4,7 +4,6 @@ import jakarta.ejb.EJBException;
 import jakarta.enterprise.context.Dependent;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaQuery;
-import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.model.Category;
 
 import java.util.List;

@@ -2,7 +2,6 @@ package org.manca.jakarta.project.model;
 
 import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
-
 import java.time.LocalTime;
 import java.util.List;
 

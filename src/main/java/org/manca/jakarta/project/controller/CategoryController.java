@@ -3,7 +3,6 @@ package org.manca.jakarta.project.controller;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.model.Category;
 import org.manca.jakarta.project.service.CategoryService;
 

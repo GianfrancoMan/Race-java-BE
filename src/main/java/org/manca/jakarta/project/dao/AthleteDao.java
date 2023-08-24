@@ -2,7 +2,6 @@ package org.manca.jakarta.project.dao;
 
 import jakarta.ejb.EJBException;
 import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.Typed;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 import org.manca.jakarta.project.model.Athlete;

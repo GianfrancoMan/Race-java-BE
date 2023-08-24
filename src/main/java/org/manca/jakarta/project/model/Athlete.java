@@ -1,19 +1,13 @@
 package org.manca.jakarta.project.model;
 
 import jakarta.json.bind.annotation.JsonbTransient;
-import jakarta.mail.util.LineInputStream;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
 /*
-La classe 'Athlete' finge da Entity Model per la tabella 'Athletes' del database 'race'.
-I dati completi degli atleti verranno memorizzati nel database, inoltre questa classe è
-in relazione diretta con la classe 'RawAthlete' che verra utilizzato dalla classe 'Officer'
-per gestire lo sviluppo della gara.
+La classe 'Athlete' funge da Entity Model per la tabella 'Athletes' del database 'race'.
+I dati completi degli atleti verranno memorizzati nel database.
  */
 @Entity
 @Table(name = "athletes")

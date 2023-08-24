@@ -2,7 +2,6 @@ package org.manca.jakarta.project.service;
 
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
-import jdk.dynalink.linker.LinkerServices;
 import org.manca.jakarta.project.dao.RaceDao;
 import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.model.Category;
