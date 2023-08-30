@@ -4,7 +4,6 @@ import jakarta.ejb.EJBException;
 import jakarta.enterprise.context.Dependent;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaQuery;
-import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.model.Category;
 
 import java.util.List;
@@ -32,8 +31,12 @@ public class CategoryDao {
      Make persistent a new entity instance of Category in the persistent context.
      */
     public Category save(Category category ) {
-        em.persist(category);
-        return category;
+        try {
+            em.persist(category);
+            return category;
+        } catch (EJBException e) {
+            return null;
+        }
     }
 
     /*

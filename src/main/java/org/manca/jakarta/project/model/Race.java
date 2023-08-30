@@ -11,7 +11,7 @@ import java.util.List;
     lA  CLASSE  'Race' SPECIFICA I DATI BASE DELL'EVENTO GARA 'title' INDICA IL TITOLO CHE VIENE ASSEGNATO ALL'EVENTO GARA
     'place' INDICA IL LUOGO DEL RITROVO, 'city' LA CITTA'  'raceDateTime' INDICA DATA E ORA DEL RITROVO, 'organizar' INDICA
     L'ASSOCIAZIONE O L'ENTE ORGANIZZATORE DELL'EVENTO, INOLTRE E' IN RELAZIONE ManyTOMany CON LE CLASSI
-    Category e Athelte
+    Category e Athlete
  */
 @Entity
 @Table(name="races")

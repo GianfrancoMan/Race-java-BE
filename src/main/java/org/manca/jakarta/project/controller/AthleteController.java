@@ -5,8 +5,6 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.service.AthleteService;
-
-import java.time.LocalDate;
 import java.util.List;
 @Path("/athl")
 public class AthleteController {

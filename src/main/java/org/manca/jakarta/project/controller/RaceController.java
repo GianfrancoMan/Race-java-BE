@@ -17,7 +17,7 @@ public class RaceController {
     @Path(value = "/new")
     @Consumes({MediaType.APPLICATION_JSON})
     public Race save(Race race) {
-        return rs.savaRace(race);
+        return rs.saveRace(race);
     }
 
     @GET
@@ -37,8 +37,10 @@ public class RaceController {
     @Path("/add/athl")
     public boolean addAthlete(
             @QueryParam(value = "raceId") Long raceId,
-            @QueryParam(value = "athleteId") Long athleteId) {
-        return rs.addAthlete(raceId, athleteId);
+            @QueryParam(value = "athleteId") Long athleteId,
+            @QueryParam(value = "categoryId") Long categoryId,
+            @QueryParam(value = "raceNumber") String raceNumber) {
+        return rs.addAthlete(raceId, athleteId, categoryId, raceNumber);
     }
 
     @POST
