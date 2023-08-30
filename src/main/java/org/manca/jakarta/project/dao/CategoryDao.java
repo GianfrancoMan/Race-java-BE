@@ -31,8 +31,12 @@ public class CategoryDao {
      Make persistent a new entity instance of Category in the persistent context.
      */
     public Category save(Category category ) {
-        em.persist(category);
-        return category;
+        try {
+            em.persist(category);
+            return category;
+        } catch (EJBException e) {
+            return null;
+        }
     }
 
     /*
