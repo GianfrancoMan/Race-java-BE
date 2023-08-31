@@ -11,6 +11,7 @@ import org.manca.jakarta.project.util.StartList;
 import org.manca.jakarta.project.util.StartListSerializer;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,6 +137,7 @@ public class RaceService {
             try {
                 serializer.serialize(startList, fileName);
             } catch (IOException e2) {
+                e2.printStackTrace();
                 rd.removeAthlete(raceId, athleteId);//since the RawAthlete serialization failed, I cancel the persistence operation performed earlier
                 System.out.println("[ERROR]org.manca.jakarta.project.service.RaceService.addAthlete:failed, problems to create new StartList instance.");
                 return false;
