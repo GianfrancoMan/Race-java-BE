@@ -5,6 +5,9 @@ import java.util.List;
 public class StartList implements Serializable {
     private List<RawAthlete> rawAthletes;
 
+    public StartList() {
+    }
+
     public StartList(List<RawAthlete> rawAthletes) {
         setRawAthletes(rawAthletes);
     }

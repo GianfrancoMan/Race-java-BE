@@ -1,7 +1,6 @@
 package org.manca.jakarta.project.util;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.core.Application;
 
 import java.io.*;
 
@@ -9,10 +8,12 @@ import java.io.*;
 public class StartListSerializer {
 
     public boolean serialize(StartList startList, String fileName) throws IOException {
-        File file=new File("C:\\MySoftwareapplications\\Race\\src\\main\\resources\\data\\"+fileName);
+        File file = new File(this.getPathForStartList());
+        file.mkdirs();
+        file = new File(this.getPathForStartList() + fileName);
         file.createNewFile();
 
-        try (FileOutputStream fos = new FileOutputStream(file,true);
+        try (FileOutputStream fos = new FileOutputStream(file);
                 ObjectOutputStream obs = new ObjectOutputStream(fos)) {
 
             obs.writeObject(startList);
@@ -23,11 +24,18 @@ public class StartListSerializer {
     }
 
     public StartList deserialize(String fileName) throws IOException, ClassNotFoundException {
-        try (FileInputStream fis = new FileInputStream("C:\\MySoftwareapplications\\Race\\src\\main\\resources\\data\\"+fileName);
+        try (FileInputStream fis = new FileInputStream(this.getPathForStartList()+fileName);
              ObjectInputStream obs = new ObjectInputStream(fis)) {
             System.out.println("org.manca.jakarta.project.util.StartListSerializer.deserialize:'StartList deserialized.'");
             return (StartList) obs.readObject();
         }
+    }
+
+    //Get the path of the files in which serialize or deserialize StartList instance dynamically
+    private String getPathForStartList() {
+        final String TARGET_URL = "/AppData/Local/Dtrcs/data/";
+        String path = System.getenv("USERPROFILE").replace("\\", "/") + TARGET_URL;
+        return path;
     }
 
 }
