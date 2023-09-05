@@ -81,4 +81,16 @@ public class RawAthlete implements Serializable {
     public void setState(boolean state) {
         this.state = state;
     }
+
+    @Override
+    public String toString() {
+        return "RawAthlete{" +
+                "idAthlete=" + idAthlete +
+                ", raceNumber='" + raceNumber + '\'' +
+                ", idCategory=" + idCategory +
+                ", lapsToRun=" + lapsToRun +
+                ", timeOnLaps=" + timeOnLaps +
+                ", state=" + state +
+                '}';
+    }
 }

@@ -13,7 +13,7 @@ public class StartListSerializer {
         file = new File(this.getPathForStartList() + fileName);
         file.createNewFile();
 
-        try (FileOutputStream fos = new FileOutputStream(file,true);
+        try (FileOutputStream fos = new FileOutputStream(file);
                 ObjectOutputStream obs = new ObjectOutputStream(fos)) {
 
             obs.writeObject(startList);
