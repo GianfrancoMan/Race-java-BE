@@ -65,10 +65,14 @@ public class RaceService {
     }
 
     public boolean removeCategoryFromRace(Long raceId, Long categoryId) {
-        if(raceId >= 1 && categoryId >= 1)
-            return rd.removeCategory(raceId, categoryId);
-        else
-            return false;
+        boolean removed = false;
+        if(raceId != null && categoryId != null &&raceId >= 1 && categoryId >= 1) {
+
+            removed = rd.findById(raceId) != null;
+            if(removed) removed = findRawAthleteByCategory(raceId, categoryId).size() == 0;
+            if(removed) removed =  rd.removeCategory(raceId, categoryId);
+        }
+        return removed;
     }
 
     /**
@@ -100,6 +104,7 @@ public class RaceService {
             return null;
     }
 
+    //Makes Lower Case the basic data of a Race.
     private void makeLowerCase(Race race) {
         race.setCity(race.getCity().toLowerCase());
         race.setPlace(race.getPlace().toLowerCase());
@@ -200,5 +205,27 @@ public class RaceService {
                 return true;
         }
         return false;
+    }
+
+    /**
+     *Return a List of RawAthlete instances belonging to a specific Race that have the 'categoryId' attribute that
+     * matches 'categoryId' passed as parameter
+     * @param raceId The unique identifier of a specific race
+     * @param categoryId The unique identifier of a specific category
+     * @return a List of RawAthlete instances
+     */
+    private List<RawAthlete> findRawAthleteByCategory(Long raceId, Long categoryId){
+        List<RawAthlete> rawAthletes = new ArrayList<>();
+        String fileName = this.makeName(raceId);
+        try {
+            StartList startList = serializer.deserialize(fileName);
+            for(RawAthlete rawAthlete : startList.getRawAthletes()) {
+                if(rawAthlete.getIdCategory() == categoryId)
+                    rawAthletes.add(rawAthlete);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            return rawAthletes;
+        }
+        return rawAthletes;
     }
 }
