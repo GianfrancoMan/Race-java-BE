@@ -7,6 +7,8 @@ import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.model.Category;
 import org.manca.jakarta.project.model.Race;
 import org.manca.jakarta.project.service.RaceService;
+import org.manca.jakarta.project.util.RawAthlete;
+
 import java.util.List;
 
 @Path("/rc")
@@ -88,6 +90,24 @@ public class RaceController {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Athlete> raceAthletes(@QueryParam("raceId") Long raceId) {
         return rs.getAllRaceAthletes(raceId);
+    }
+
+    @GET
+    @Path("raw/category")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<RawAthlete> getRawByCategory(
+            @QueryParam("raceId") Long raceId,
+            @QueryParam("categoryId") Long categoryId) {
+        return rs.findRawAthleteByCategory(raceId,categoryId);
+    }
+
+    @GET
+    @Path("raw/rnumber")
+    @Produces(MediaType.APPLICATION_JSON)
+    public RawAthlete getRawByRaceNumber(
+            @QueryParam("raceId") Long raceId,
+            @QueryParam("raceNumber") String raceNumber ) {
+        return rs.findRawAthleteByRaceNumber(raceId,raceNumber);
     }
 
 }

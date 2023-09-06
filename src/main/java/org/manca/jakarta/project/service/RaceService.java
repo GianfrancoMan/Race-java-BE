@@ -214,7 +214,7 @@ public class RaceService {
      * @param categoryId The unique identifier of a specific category
      * @return a List of RawAthlete instances (will be empty if there are no matches)
      */
-    private List<RawAthlete> findRawAthleteByCategory(Long raceId, Long categoryId){
+    public List<RawAthlete> findRawAthleteByCategory(Long raceId, Long categoryId){
         List<RawAthlete> rawAthletes = new ArrayList<>();
         try {
             StartList startList = serializer.deserialize(this.makeName(raceId));
@@ -235,7 +235,7 @@ public class RaceService {
      * @param raceNumber the race number of the RawAthlete to fetch
      * @return a RawAthlete instance or null if there are no matches.
      */
-    private RawAthlete findRawAthleteByRaceNumber(Long raceId, String raceNumber) {
+    public RawAthlete findRawAthleteByRaceNumber(Long raceId, String raceNumber) {
         try {
             StartList startList = serializer.deserialize(this.makeName(raceId));
             for (RawAthlete raw : startList.getRawAthletes()) {
