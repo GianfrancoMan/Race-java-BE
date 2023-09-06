@@ -212,13 +212,12 @@ public class RaceService {
      * matches 'categoryId' passed as parameter
      * @param raceId The unique identifier of a specific race
      * @param categoryId The unique identifier of a specific category
-     * @return a List of RawAthlete instances
+     * @return a List of RawAthlete instances (will be empty if there are no matches)
      */
     private List<RawAthlete> findRawAthleteByCategory(Long raceId, Long categoryId){
         List<RawAthlete> rawAthletes = new ArrayList<>();
-        String fileName = this.makeName(raceId);
         try {
-            StartList startList = serializer.deserialize(fileName);
+            StartList startList = serializer.deserialize(this.makeName(raceId));
             for(RawAthlete rawAthlete : startList.getRawAthletes()) {
                 if(rawAthlete.getIdCategory() == categoryId)
                     rawAthletes.add(rawAthlete);
@@ -227,5 +226,26 @@ public class RaceService {
             return rawAthletes;
         }
         return rawAthletes;
+    }
+
+    /**
+     * Returns the RawAthlete instance belonging to a specific Race that have the raceNumber attribute that matches 'raceNumber' passed as parameter
+     * or null if there are no matches.
+     * @param raceId The unique id of a specific Race
+     * @param raceNumber the race number of the RawAthlete to fetch
+     * @return a RawAthlete instance or null if there are no matches.
+     */
+    private RawAthlete findRawAthleteByRaceNumber(Long raceId, String raceNumber) {
+        try {
+            StartList startList = serializer.deserialize(this.makeName(raceId));
+            for (RawAthlete raw : startList.getRawAthletes()) {
+                if(raw.getRaceNumber().equals(raceNumber)) {
+                    return  raw;
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            return null;
+        }
+        return null;
     }
 }
