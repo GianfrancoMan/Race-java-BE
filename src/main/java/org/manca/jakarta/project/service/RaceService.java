@@ -65,10 +65,14 @@ public class RaceService {
     }
 
     public boolean removeCategoryFromRace(Long raceId, Long categoryId) {
-        if(raceId >= 1 && categoryId >= 1)
-            return rd.removeCategory(raceId, categoryId);
-        else
-            return false;
+        boolean removed = false;
+        if(raceId != null && categoryId != null &&raceId >= 1 && categoryId >= 1) {
+
+            removed = rd.findById(raceId) != null;
+            if(removed) removed = findRawAthleteByCategory(raceId, categoryId).size() == 0;
+            if(removed) removed =  rd.removeCategory(raceId, categoryId);
+        }
+        return removed;
     }
 
     /**
@@ -100,6 +104,7 @@ public class RaceService {
             return null;
     }
 
+    //Makes Lower Case the basic data of a Race.
     private void makeLowerCase(Race race) {
         race.setCity(race.getCity().toLowerCase());
         race.setPlace(race.getPlace().toLowerCase());
@@ -200,5 +205,47 @@ public class RaceService {
                 return true;
         }
         return false;
+    }
+
+    /**
+     *Return a List of RawAthlete instances belonging to a specific Race that have the 'categoryId' attribute that
+     * matches 'categoryId' passed as parameter
+     * @param raceId The unique identifier of a specific race
+     * @param categoryId The unique identifier of a specific category
+     * @return a List of RawAthlete instances (will be empty if there are no matches)
+     */
+    public List<RawAthlete> findRawAthleteByCategory(Long raceId, Long categoryId){
+        List<RawAthlete> rawAthletes = new ArrayList<>();
+        try {
+            StartList startList = serializer.deserialize(this.makeName(raceId));
+            for(RawAthlete rawAthlete : startList.getRawAthletes()) {
+                if(rawAthlete.getIdCategory() == categoryId)
+                    rawAthletes.add(rawAthlete);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            return rawAthletes;
+        }
+        return rawAthletes;
+    }
+
+    /**
+     * Returns the RawAthlete instance belonging to a specific Race that have the raceNumber attribute that matches 'raceNumber' passed as parameter
+     * or null if there are no matches.
+     * @param raceId The unique id of a specific Race
+     * @param raceNumber the race number of the RawAthlete to fetch
+     * @return a RawAthlete instance or null if there are no matches.
+     */
+    public RawAthlete findRawAthleteByRaceNumber(Long raceId, String raceNumber) {
+        try {
+            StartList startList = serializer.deserialize(this.makeName(raceId));
+            for (RawAthlete raw : startList.getRawAthletes()) {
+                if(raw.getRaceNumber().equals(raceNumber)) {
+                    return  raw;
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            return null;
+        }
+        return null;
     }
 }
