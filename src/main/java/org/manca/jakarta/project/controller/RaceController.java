@@ -92,22 +92,4 @@ public class RaceController {
         return rs.getAllRaceAthletes(raceId);
     }
 
-    @GET
-    @Path("raw/category")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<RawAthlete> getRawByCategory(
-            @QueryParam("raceId") Long raceId,
-            @QueryParam("categoryId") Long categoryId) {
-        return rs.findRawAthleteByCategory(raceId,categoryId);
-    }
-
-    @GET
-    @Path("raw/rnumber")
-    @Produces(MediaType.APPLICATION_JSON)
-    public RawAthlete getRawByRaceNumber(
-            @QueryParam("raceId") Long raceId,
-            @QueryParam("raceNumber") String raceNumber ) {
-        return rs.findRawAthleteByRaceNumber(raceId,raceNumber);
-    }
-
 }

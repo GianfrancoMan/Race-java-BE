@@ -9,6 +9,7 @@ import org.manca.jakarta.project.model.Race;
 import org.manca.jakarta.project.util.RawAthlete;
 import org.manca.jakarta.project.util.StartList;
 import org.manca.jakarta.project.util.StartListSerializer;
+import org.manca.jakarta.project.util.service.RawAthleteService;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -25,6 +26,8 @@ public class RaceService {
     CategoryService categoryService;
     @Inject
     StartListSerializer serializer;
+    @Inject
+    RawAthleteService rawAthleteService;
 
     public Race saveRace(Race race) {
         this.makeLowerCase(race);
@@ -43,8 +46,10 @@ public class RaceService {
         if (raceId!=null && athleteId!=null && categoryID !=null && raceNumber != null
             && raceId>=1 && athleteId>=1 &&categoryID>=1) {
             boolean checkAthleteAdded = rd.addAthlete(raceId, athleteId);
+            rawAthleteService.setFileName(this.makeName(raceId));
             if(checkAthleteAdded) { //only if persistence operation is successful the RawAthlete will be created and added to the StartList instance via serialization and deserialization operations
-                checkAthleteAdded = addRawAthlete(raceId, athleteId, categoryID, raceNumber);
+                checkAthleteAdded = rawAthleteService.addRawAthlete(raceId, athleteId, categoryID, raceNumber);
+                if(!checkAthleteAdded) rd.removeAthlete(raceId, athleteId); //since the race number already exists, I cancel the persistence operation performed earlier
             }
             return checkAthleteAdded;
 
@@ -67,9 +72,11 @@ public class RaceService {
     public boolean removeCategoryFromRace(Long raceId, Long categoryId) {
         boolean removed = false;
         if(raceId != null && categoryId != null &&raceId >= 1 && categoryId >= 1) {
-
             removed = rd.findById(raceId) != null;
-            if(removed) removed = findRawAthleteByCategory(raceId, categoryId).size() == 0;
+            if(removed) {
+                rawAthleteService.setFileName(this.makeName(raceId));
+                removed = rawAthleteService.findRawAthleteByCategory(categoryId).size() == 0;
+            }
             if(removed) removed =  rd.removeCategory(raceId, categoryId);
         }
         return removed;
@@ -83,8 +90,9 @@ public class RaceService {
      */
     public boolean removeAthleteFromRace(Long raceId, Long athleteId) {
         if(raceId >= 1 && athleteId >= 1) {
+            rawAthleteService.setFileName(this.makeName(raceId));
             if(rd.removeAthlete(raceId, athleteId))
-                return removeRawAthlete(raceId, athleteId);
+                return rawAthleteService.removeRawAthlete(athleteId);
         }
 
         return false;
@@ -111,11 +119,7 @@ public class RaceService {
         race.setTitle(race.getTitle().toLowerCase());
     }
 
-    private String createFileName(Long raceID) {
-        return makeName(raceID);
-    }
-
-    private String makeName(Long raceID) {
+    public String makeName(Long raceID) {
         return Long.toString(raceID)
                 .concat("_")
                 .concat(rd.findById(raceID).getTitle().replace(" ", "_"))
@@ -124,128 +128,4 @@ public class RaceService {
                 .concat(".srd");
     }
 
-
-    /** Implements the code to create StartList instance or retrieve it from serialized StartList objects if it has
-        already been serialized being aware that the file in which the StartList instance is serialized is named
-        according the rule below:
-        file name = "(race-id)__(race-title)__(year-of-race-date).srd" -->  Eg: file name = "101__heroes__cup__2023.srd"
-        (if there are  the empty spaces in the race title, replace them with an underscore as in the example above) */
-    private boolean addRawAthlete(Long raceId, Long athleteId, Long categoryID, String raceNumber) {
-        var lapsToRun = categoryService.findCategoryById(categoryID).getLapsNumber();
-        // Creates RawAthlete Instance to add at a StarList instance
-        RawAthlete rawAthlete = new RawAthlete(athleteId, raceNumber, categoryID, lapsToRun);
-        var fileName = createFileName(raceId);
-        try {
-            StartList startList = serializer.deserialize(fileName);
-            if(raceNumberAlreadyExists(startList.getRawAthletes(), raceNumber)) {
-                rd.removeAthlete(raceId, athleteId); //since the race number already exists, I cancel the persistence operation performed earlier
-                return false;
-            }
-            for(RawAthlete raw : startList.getRawAthletes()) System.out.println(raw);//todo remove this line after testing
-            startList.addRawAthlete(rawAthlete);
-            serializer.serialize(startList, fileName);
-
-        } catch (IOException | ClassNotFoundException e) {
-            //create a new StartList instance
-            System.out.println("[ERROR]org.manca.jakarta.project.service.RaceService.addAthlete:problems to retrieve StartList instance, I try to create a new instance...");
-            List<RawAthlete> rawAthletes = new ArrayList<>();
-            rawAthletes.add(rawAthlete);
-            StartList startList = new StartList(rawAthletes);
-            try {
-                serializer.serialize(startList, fileName);
-            } catch (IOException e2) {
-                e2.printStackTrace();
-                rd.removeAthlete(raceId, athleteId);//since the RawAthlete serialization failed, I cancel the persistence operation performed earlier
-                System.out.println("[ERROR]org.manca.jakarta.project.service.RaceService.addAthlete:failed, problems to create new StartList instance.");
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     *Tries to deserialize a StartList object from file related to raceId,
-     * then look up a specific RawAthlete by its id by  removing it from the
-     * StartList, finally serialize the changed StartList instance.
-     * @param raceId The unique race id
-     * @param athleteId The unique athlete id
-     * @return boolean <strong>true</strong> if deserialization operations were successful otherwise <strong>false</strong>
-     */
-    private boolean removeRawAthlete(Long raceId, Long athleteId) {
-        boolean checkRemoveAthlete = false;
-        String filename = this.makeName(raceId);
-        try {
-            StartList startList = serializer.deserialize(filename);
-            for (RawAthlete rawAthlete : startList.getRawAthletes()) System.out.println(rawAthlete);
-            for (var i=0; i<startList.getRawAthletes().size(); i++) {
-                RawAthlete raw = startList.getRawAthletes().get(i);
-                if (raw.getIdAthlete() == athleteId) {
-                    checkRemoveAthlete = true;
-                    startList.getRawAthletes().remove(i);
-                    serializer.serialize(startList, filename);
-                    break;
-                }
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("org.manca.jakarta.project.service.RaceService.removeAthleteFromRace: Deserialization failed");
-            checkRemoveAthlete = false;
-        }
-        return checkRemoveAthlete;
-    }
-
-    /**
-     * Checks if already exists in the race, an athlete that has the same race number passed as parameter.
-     * @param rawAthletes The athletes of the race
-     * @param raceNumberToCheck The race number to be compared with the race number of the athletes registered for the race
-     * @return true if a race number already exists otherwise false.
-     */
-    private boolean raceNumberAlreadyExists(List<RawAthlete> rawAthletes, String raceNumberToCheck) {
-        for(RawAthlete rawAthlete : rawAthletes) {
-            if(rawAthlete.getRaceNumber().equals(raceNumberToCheck))
-                return true;
-        }
-        return false;
-    }
-
-    /**
-     *Return a List of RawAthlete instances belonging to a specific Race that have the 'categoryId' attribute that
-     * matches 'categoryId' passed as parameter
-     * @param raceId The unique identifier of a specific race
-     * @param categoryId The unique identifier of a specific category
-     * @return a List of RawAthlete instances (will be empty if there are no matches)
-     */
-    public List<RawAthlete> findRawAthleteByCategory(Long raceId, Long categoryId){
-        List<RawAthlete> rawAthletes = new ArrayList<>();
-        try {
-            StartList startList = serializer.deserialize(this.makeName(raceId));
-            for(RawAthlete rawAthlete : startList.getRawAthletes()) {
-                if(rawAthlete.getIdCategory() == categoryId)
-                    rawAthletes.add(rawAthlete);
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            return rawAthletes;
-        }
-        return rawAthletes;
-    }
-
-    /**
-     * Returns the RawAthlete instance belonging to a specific Race that have the raceNumber attribute that matches 'raceNumber' passed as parameter
-     * or null if there are no matches.
-     * @param raceId The unique id of a specific Race
-     * @param raceNumber the race number of the RawAthlete to fetch
-     * @return a RawAthlete instance or null if there are no matches.
-     */
-    public RawAthlete findRawAthleteByRaceNumber(Long raceId, String raceNumber) {
-        try {
-            StartList startList = serializer.deserialize(this.makeName(raceId));
-            for (RawAthlete raw : startList.getRawAthletes()) {
-                if(raw.getRaceNumber().equals(raceNumber)) {
-                    return  raw;
-                }
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            return null;
-        }
-        return null;
-    }
 }
