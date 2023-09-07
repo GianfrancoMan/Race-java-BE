@@ -5,18 +5,30 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-    LA CLASSE  'RawAthlete'  E' IN RELAZIONE CON LA CLASSE 'Athlete'  TRAMITE IL SUO ATTRIBUTO 'id' , MENTRE
-    L'ATTRIBUTO  'raceNumber' E' IL NUMERO DI GARA CHE VERRA' ASSOCIATO ALL'ATLETA IN GARA  IN FASE DI ISCRI-
-    ZIONE L'ATTRIBUTO 'category' INDICA LA CATEGORIA DI APPARTENENZA DELL'ATLTETA IN GARA.
+/**
+ * RawAthlete instances represent the state of the athlete that performing a race,
+ * it will be make persistent by serialization and stored in the user machine as part of
+ * StartList serializable object that represents the start list of the race
  */
 public class RawAthlete implements Serializable {
     // Declarations
+
+    /** idAthlete is related to the id of Athlete Entity */
     private long idAthlete;
+
+    /** raceNumber is the unique race number of the athlete */
     private String raceNumber;
+
+    /** idCategory is related to the id of Category Entity */
     private long idCategory;
+
+    /** lapsToRun is the laps total number that the athlete should be performing */
     private int lapsToRun;
+
+    /** timeOnLaps is the list of the athlete's lap times */
     private List<LocalTime> timeOnLaps;
+
+    /** state indicates if the athlete has started or not*/
     private boolean state;
 
     // Constructor
@@ -28,8 +40,8 @@ public class RawAthlete implements Serializable {
         this.timeOnLaps= new ArrayList<>(getLapsToRun());
         setState(false);
     }
-//GETTER AND SETTER
 
+//GETTER AND SETTER
     public long getIdAthlete() {
         return idAthlete;
     }
