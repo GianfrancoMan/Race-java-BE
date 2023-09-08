@@ -162,4 +162,49 @@ public class RawAthleteService {
             return null;
         }
     }
+
+    /**
+     * This method search a RawAthlete that have the race number equals to the oldNumber parameter and replace it
+     * with newNumber parameter.
+     * @param oldNumber the race number that will be changed
+     * @param newNumber the new race number for RawAthlete
+     * @return true if operation was successful otherwise false
+     */
+    public boolean changeRaceNumber(String oldNumber, String newNumber) {
+        try {
+            StartList startList = serializer.deserialize(getFileName());
+
+            for (RawAthlete raw : startList.getRawAthletes())
+                if(raw.getRaceNumber().equals(oldNumber))
+                    raw.setRaceNumber(newNumber);
+
+            serializer.serialize(startList, getFileName());
+            return true;
+
+        } catch (IOException | ClassNotFoundException e) {
+            return false;
+        }
+    }
+    /**
+     * This method search for a RawAthlete by its unique id and replace irs race number with the one passed with
+     * the newNumber parameter.
+     * @param id the unique RawAthlete's id
+     * @param newNumber the new race number for RawAthlete
+     * @return true if operation was successful otherwise false
+     */
+    public boolean changeRaceNumber(Long id, String newNumber) {
+        try {
+            StartList startList = serializer.deserialize(getFileName());
+
+            for (RawAthlete raw : startList.getRawAthletes())
+                if(raw.getIdAthlete() == id)
+                    raw.setRaceNumber(newNumber);
+
+            serializer.serialize(startList, getFileName());
+            return true;
+
+        } catch (IOException | ClassNotFoundException e) {
+            return false;
+        }
+    }
 }
