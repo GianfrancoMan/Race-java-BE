@@ -6,15 +6,8 @@ import org.manca.jakarta.project.dao.RaceDao;
 import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.model.Category;
 import org.manca.jakarta.project.model.Race;
-import org.manca.jakarta.project.util.RawAthlete;
-import org.manca.jakarta.project.util.StartList;
-import org.manca.jakarta.project.util.StartListSerializer;
 import org.manca.jakarta.project.util.service.RawAthleteService;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,10 +15,6 @@ import java.util.List;
 public class RaceService {
     @Inject
     private RaceDao rd;
-    @Inject
-    CategoryService categoryService;
-    @Inject
-    StartListSerializer serializer;
     @Inject
     RawAthleteService rawAthleteService;
 

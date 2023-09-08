@@ -21,9 +21,9 @@ public class Category {
     private Long id;
     @Column(name = "title", nullable = false)
     private String title;
-    @Column(name = "laps")
+    @Transient
     private short lapsNumber;
-    @Column(name = "start_time")
+    @Transient
     private LocalTime raceStartTime;
     @JsonbTransient
     @ManyToMany(mappedBy = "categories")

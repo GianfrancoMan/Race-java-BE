@@ -1,10 +1,7 @@
 package org.manca.jakarta.project.controller;
 
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.manca.jakarta.project.service.RaceService;
 import org.manca.jakarta.project.util.RawAthlete;
@@ -45,6 +42,30 @@ public class RawAthleteController {
     public List<RawAthlete> getAllRawAthlete(@QueryParam("raceId") Long raceId) {
         rawAthleteService.setFileName(raceService.makeName(raceId));
         return rawAthleteService.findAllRawAthletes();
+    }
+
+    @PUT
+    @Path(value = "/change/rn/byrn")
+    public boolean changeRaceNumber(
+            @QueryParam("raceId") Long raceId,
+            @QueryParam("oldNumber") String oldNumber,
+            @QueryParam("newNumber") String newNumber) {
+
+        rawAthleteService.setFileName(raceService.makeName(raceId));
+
+        return rawAthleteService.changeRaceNumber(oldNumber, newNumber);
+    }
+
+    @PUT
+    @Path(value = "/change/rn/byid")
+    public boolean changeRaceNumber(
+            @QueryParam("raceId") Long raceId,
+            @QueryParam("athleteId") Long athleteId,
+            @QueryParam("newNumber") String newNumber) {
+
+        rawAthleteService.setFileName(raceService.makeName(raceId));
+
+        return rawAthleteService.changeRaceNumber(athleteId, newNumber);
     }
 
 }
