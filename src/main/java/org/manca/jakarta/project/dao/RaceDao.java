@@ -117,7 +117,7 @@ public class RaceDao {
         try {
             Race race = em.find(Race.class, raceId);
 
-            if(this.checkAlreadyPresent(race.getCategories(), categoryId))
+            if(race == null || this.checkAlreadyPresent(race.getCategories(), categoryId))
                 return false;
 
             Category category = em.find(Category.class, categoryId);

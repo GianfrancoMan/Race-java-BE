@@ -21,10 +21,6 @@ public class Category {
     private Long id;
     @Column(name = "title", nullable = false)
     private String title;
-    @Transient
-    private short lapsNumber;
-    @Transient
-    private LocalTime raceStartTime;
     @JsonbTransient
     @ManyToMany(mappedBy = "categories")
     List<Race> races;
@@ -36,12 +32,6 @@ public class Category {
     public String getTitle() {
         return title;
     }
-    public short getLapsNumber() {
-        return lapsNumber;
-    }
-    public LocalTime getRaceStartTime() {
-        return raceStartTime;
-    }
     public List<Race> getRaces() {
         return races;
     }
@@ -50,12 +40,6 @@ public class Category {
     }
     public void setTitle(String title) {
         this.title = title;
-    }
-    public void setLapsNumber(short lapsNumber) {
-        this.lapsNumber = lapsNumber;
-    }
-    public void setRaceStartTime(LocalTime raceStartTime) {
-        this.raceStartTime = raceStartTime;
     }
     public void setRaces(List<Race> races) {
         this.races = races;
@@ -68,8 +52,6 @@ public class Category {
         return "Category{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", lapsNumber=" + lapsNumber +
-                ", raceStartTime=" + raceStartTime +
                 ", races=" + races +
                 '}';
     }

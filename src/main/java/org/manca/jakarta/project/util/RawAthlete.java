@@ -32,7 +32,7 @@ public class RawAthlete implements Serializable {
     private boolean state;
 
     // Constructor
-    public RawAthlete(long idAthlete, String raceNumber, long idCategory, int lapsToRun) {
+    public RawAthlete(long idAthlete, String raceNumber, long idCategory) {
         setIdAthlete(idAthlete);
         setRaceNumber(raceNumber);
         setIdCategory(idCategory);

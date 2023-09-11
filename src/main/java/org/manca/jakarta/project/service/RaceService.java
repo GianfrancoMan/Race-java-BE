@@ -6,7 +6,7 @@ import org.manca.jakarta.project.dao.RaceDao;
 import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.model.Category;
 import org.manca.jakarta.project.model.Race;
-import org.manca.jakarta.project.util.service.RawAthleteService;
+import org.manca.jakarta.project.util.service.RawService;
 
 import java.util.List;
 
@@ -14,9 +14,11 @@ import java.util.List;
 @Stateless
 public class RaceService {
     @Inject
+    private CategoryService categoryService;
+    @Inject
     private RaceDao rd;
     @Inject
-    RawAthleteService rawAthleteService;
+    RawService rawService;
 
     public Race saveRace(Race race) {
         this.makeLowerCase(race);
@@ -35,9 +37,9 @@ public class RaceService {
         if (raceId!=null && athleteId!=null && categoryID !=null && raceNumber != null
             && raceId>=1 && athleteId>=1 &&categoryID>=1) {
             boolean checkAthleteAdded = rd.addAthlete(raceId, athleteId);
-            rawAthleteService.setFileName(this.makeName(raceId));
+            rawService.setFileName(this.makeName(raceId));
             if(checkAthleteAdded) { //only if persistence operation is successful the RawAthlete will be created and added to the StartList instance via serialization and deserialization operations
-                checkAthleteAdded = rawAthleteService.addRawAthlete(raceId, athleteId, categoryID, raceNumber);
+                checkAthleteAdded = rawService.addRawAthlete(athleteId, categoryID, raceNumber);
                 if(!checkAthleteAdded) rd.removeAthlete(raceId, athleteId); //since the race number already exists, I cancel the persistence operation performed earlier
             }
             return checkAthleteAdded;
@@ -48,7 +50,13 @@ public class RaceService {
 
     public boolean addCategory(Long raceId, Long categoryId) {
         if (raceId!=null && categoryId!=null && raceId>=1 && categoryId>=1) {
-            return rd.addCategory(raceId, categoryId);
+            boolean checkCategoryAdded =  rd.addCategory(raceId, categoryId);
+            rawService.setFileName(this.makeName(raceId));
+            if(checkCategoryAdded) { //only if persistence operation is successful the RawCategory will be created and added to the StartList instance via serialization and deserialization operations
+            checkCategoryAdded = rawService.addRawCategory(categoryId);
+                if(!checkCategoryAdded) rd.removeCategory(raceId, categoryId); //since the adding of the RawCategory fails, I cancel the persistence operation performed earlier
+            }
+            return checkCategoryAdded;
         }
         return false;
     }
@@ -63,10 +71,14 @@ public class RaceService {
         if(raceId != null && categoryId != null &&raceId >= 1 && categoryId >= 1) {
             removed = rd.findById(raceId) != null;
             if(removed) {
-                rawAthleteService.setFileName(this.makeName(raceId));
-                removed = rawAthleteService.findRawAthleteByCategory(categoryId).size() == 0;
+                rawService.setFileName(this.makeName(raceId));
+                removed = rawService.findRawAthleteByCategory(categoryId).size() == 0;
             }
-            if(removed) removed =  rd.removeCategory(raceId, categoryId);
+            if(removed) {
+                removed = rawService.removeRawCategory(categoryId);
+                if(removed)
+                    removed =  rd.removeCategory(raceId, categoryId);
+            }
         }
         return removed;
     }
@@ -79,9 +91,9 @@ public class RaceService {
      */
     public boolean removeAthleteFromRace(Long raceId, Long athleteId) {
         if(raceId >= 1 && athleteId >= 1) {
-            rawAthleteService.setFileName(this.makeName(raceId));
+            rawService.setFileName(this.makeName(raceId));
             if(rd.removeAthlete(raceId, athleteId))
-                return rawAthleteService.removeRawAthlete(athleteId);
+                return rawService.removeRawAthlete(athleteId);
         }
 
         return false;
