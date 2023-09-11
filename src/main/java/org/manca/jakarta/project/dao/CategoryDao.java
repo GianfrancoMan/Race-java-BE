@@ -47,8 +47,6 @@ public class CategoryDao {
         result.setId(category.getId());
         result.setTitle(category.getTitle());
         result.setRaces(category.getRaces());
-        result.setLapsNumber(category.getLapsNumber());
-        result.setRaceStartTime(category.getRaceStartTime());
         return result;
     }
 

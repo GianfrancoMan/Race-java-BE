@@ -5,11 +5,13 @@ import java.util.List;
 public class StartList implements Serializable {
     private List<RawAthlete> rawAthletes;
 
+    private List<RawCategory> rawCategories;
+
     public StartList() {
     }
 
-    public StartList(List<RawAthlete> rawAthletes) {
-        setRawAthletes(rawAthletes);
+    public StartList(List<RawAthlete> rawAthletes, List<RawCategory> rawCategories) {
+        setRawAthletes(rawAthletes); setRawCategories(rawCategories);
     }
 
     public List<RawAthlete> getRawAthletes() {
@@ -22,5 +24,17 @@ public class StartList implements Serializable {
 
     public void addRawAthlete(RawAthlete rawAthlete) {
         rawAthletes.add(rawAthlete);
+    }
+
+    public List<RawCategory> getRawCategories() {
+        return rawCategories;
+    }
+
+    public void setRawCategories(List<RawCategory> rawCategories) {
+        this.rawCategories = rawCategories;
+    }
+
+    public void addRawCategory(RawCategory rawCategory) {
+        getRawCategories().add(rawCategory);
     }
 }
