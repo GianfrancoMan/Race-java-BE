@@ -113,6 +113,17 @@ public class RaceService {
             return null;
     }
 
+    public boolean categoryIsUsed(Long id) {
+        List<Race> races = rd.findAll();
+        for(Race race : races) {
+            for(Category category : race.getCategories()) {
+                if(category.getId().longValue() == id)
+                    return true;
+            }
+        }
+        return false;
+    }
+
     //Makes Lower Case the basic data of a Race.
     private void makeLowerCase(Race race) {
         race.setCity(race.getCity().toLowerCase());

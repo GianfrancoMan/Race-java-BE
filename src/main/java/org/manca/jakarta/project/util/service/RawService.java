@@ -2,6 +2,8 @@ package org.manca.jakarta.project.util.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.manca.jakarta.project.model.Category;
+import org.manca.jakarta.project.model.Race;
 import org.manca.jakarta.project.util.RawAthlete;
 import org.manca.jakarta.project.util.RawCategory;
 import org.manca.jakarta.project.util.StartList;
