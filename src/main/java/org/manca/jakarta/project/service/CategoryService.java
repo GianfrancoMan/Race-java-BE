@@ -13,10 +13,22 @@ public class CategoryService {
     @Inject
     private CategoryDao cd;
 
-    /*
-     Save a new category by the CategoryDao save() method.
+    /**
+     * The goal is to save a new category in the database but this will only be possible if there are no
+     * streamlined Category titles in the database that match the streamlined 'category.title'.
+     * (streamlined means that at a string has been removed the following character " ", "-", "_", "/" and made
+     * uppercase, the consequence is that if the new category title is "Master 1" for tha application it is equals
+     * to "master-1" or "Master_1" or "maSTer/1" and so on, this is due to the fact that the streamlineTitle()
+     * method return the same result in each this cases which is "MASTER1")
+     * @param category the new Category that should be persistent
+     * @return the category instance that has been persisted
      */
     public Category saveCategory(Category category) {
+        String title = category.getTitle();
+
+        if(this.categoryAlreadyExists(category.getTitle()))
+            return null;//todo look up a way to attach a header with message in the response
+
         this.makeUpperCase(category);
         return cd.save(category);
     }
@@ -70,4 +82,37 @@ public class CategoryService {
         }
         return null;
     }
-}
+
+    /**
+     * The idea is to remove all the following character from the passed string: " "(blank space), "-", "_","/"
+     * @param title the string to streamline.
+     * @return a result string.
+     */
+    private String streamlineTitle(String title) {
+        return title
+                .toUpperCase()
+                .replace("-", "")
+                .replace("_", "")
+                .replace(" ", "")
+                .replace("/", "");
+    }
+
+    /**
+     * The method checks if the streamlined <strong>newTitle</strong> is equals to the
+     * streamlined <strong>persistentTitle</strong>
+     * @param newTitle the streamlined title of a new category
+     * @return boolean true if a streamlined newTitle already exists in the database otherwise false
+     */
+    private boolean categoryAlreadyExists(String newTitle) {
+        List<Category> categories = cd.findAll();
+
+        for(Category category : categories) {
+            String persistentTitle = category.getTitle();
+            persistentTitle = this.streamlineTitle(persistentTitle);
+            if(newTitle.equals(persistentTitle))
+                return true;
+        }
+
+        return false;
+    }
+ }
