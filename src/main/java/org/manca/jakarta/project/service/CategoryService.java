@@ -28,7 +28,7 @@ public class CategoryService {
      * @return the category instance that has been persisted
      */
     public Category saveCategory(Category category) {
-        if(this.categoryAlreadyExists(category.getTitle()))
+        if(this.categoryTitleAlreadyExists(category.getTitle()))
             return null;//todo look up a way to attach a header with message in the response
 
         this.makeUpperCase(category);
@@ -49,7 +49,7 @@ public class CategoryService {
      * @return the updated Category instance if operation success otherwise null.
      */
     public Category updateCategory(Category category) {
-        if(raceService.categoryIsUsed(category.getId()))
+        if(raceService.categoryIsUsed(category.getId()) || this.categoryTitleAlreadyExists(category.getTitle()))
             return null;
 
         this.makeUpperCase(category);
@@ -116,7 +116,7 @@ public class CategoryService {
      * @param newTitle the streamlined title of a new category
      * @return boolean true if a streamlined newTitle already exists in the database otherwise false
      */
-    private boolean categoryAlreadyExists(String newTitle) {
+    private boolean categoryTitleAlreadyExists(String newTitle) {
         List<Category> categories = cd.findAll();
 
         for(Category category : categories) {
