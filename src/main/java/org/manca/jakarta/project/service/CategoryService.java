@@ -3,7 +3,9 @@ package org.manca.jakarta.project.service;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import org.manca.jakarta.project.dao.CategoryDao;
+import org.manca.jakarta.project.dao.RaceDao;
 import org.manca.jakarta.project.model.Category;
+import org.manca.jakarta.project.model.Race;
 
 import java.util.List;
 
@@ -12,6 +14,8 @@ public class CategoryService {
 
     @Inject
     private CategoryDao cd;
+    @Inject
+    RaceService raceService;
 
     /**
      * The goal is to save a new category in the database but this will only be possible if there are no
@@ -24,8 +28,6 @@ public class CategoryService {
      * @return the category instance that has been persisted
      */
     public Category saveCategory(Category category) {
-        String title = category.getTitle();
-
         if(this.categoryAlreadyExists(category.getTitle()))
             return null;//todo look up a way to attach a header with message in the response
 
@@ -33,24 +35,35 @@ public class CategoryService {
         return cd.save(category);
     }
 
-    /*
-     Retrieves all categories from the persistence context by the CategoryDao findAll() method
+    /**
+     * Retrieves all categories from the persistence context by the CategoryDao findAll() method
+     * @return A list of Category instances.
      */
     public List<Category> findAllCategories() {
         return cd.findAll();
     }
 
-    /*
-     Persists changes in the Category entity instance and retrieve the updated instance
-     by the CategoryDao update() method
+    /**
+     * Persists changes in the Category entity instance and retrieve the updated instance
+     * by the CategoryDao update() method, but this only be possible if this category hasn't been used in any Race.
+     * @return the updated Category instance if operation success otherwise null.
      */
     public Category updateCategory(Category category) {
+        if(raceService.categoryIsUsed(category.getId()))
+            return null;
+
         this.makeUpperCase(category);
         return cd.update(category);
     }
 
+    /**
+     * Delete the Category entity instance leveraging on its unique 'id' but this only be possible
+     * if this category hasn't been used in any Race.
+     * @param id the unique id category attribute
+     * @return true if operation success otherwise null.
+     */
     public boolean deleteCategory(long id) {
-        if(id > 0) {
+        if(id > 0 && !raceService.categoryIsUsed(id)) {
             return cd.delete(id);
         }
         else return false;
@@ -107,9 +120,7 @@ public class CategoryService {
         List<Category> categories = cd.findAll();
 
         for(Category category : categories) {
-            String persistentTitle = category.getTitle();
-            persistentTitle = this.streamlineTitle(persistentTitle);
-            if(newTitle.equals(persistentTitle))
+            if(this.streamlineTitle(newTitle).equalsIgnoreCase(this.streamlineTitle(category.getTitle())))
                 return true;
         }
 
