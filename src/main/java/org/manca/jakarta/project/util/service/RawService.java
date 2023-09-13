@@ -65,7 +65,7 @@ public class RawService {
             StartList startList = serializer.deserialize(getFileName());
             for (var i=0; i<startList.getRawCategories().size(); i++) {
                 RawCategory raw = startList.getRawCategories().get(i);
-                if (raw.getIdCategory() == categoryId) {
+                if (raw.getIdCategory() == categoryId.longValue()) {
                     checkRemoveAthlete = true;
                     startList.getRawCategories().remove(i);
                     serializer.serialize(startList, getFileName());
@@ -224,50 +224,55 @@ public class RawService {
     }
 
     /**
-     * This method search a RawAthlete that have the race number equals to the oldNumber parameter and replace it
-     * with newNumber parameter.
-     * @param oldNumber the race number that will be changed
-     * @param newNumber the new race number for RawAthlete
+     * This method persists all changes made to the RawAthlete instance
+     * @param rawAthlete the updated RawAthlete instance
      * @return true if operation was successful otherwise false
      */
-    public boolean changeRaceNumber(String oldNumber, String newNumber) {
+    public boolean updateRawAthlete(RawAthlete rawAthlete) {
         try {
             StartList startList = serializer.deserialize(getFileName());
-
-            for (RawAthlete raw : startList.getRawAthletes())
-                if(raw.getRaceNumber().equals(oldNumber))
-                    raw.setRaceNumber(newNumber);
-
-            serializer.serialize(startList, getFileName());
-            return true;
+            var index = 0;
+            List<RawAthlete> rawAthletes = startList.getRawAthletes();
+            for (RawAthlete raw : rawAthletes) {
+                if (raw.getIdAthlete() == rawAthlete.getIdAthlete()) {
+                    rawAthletes.set(index, rawAthlete);
+                    serializer.serialize(startList, getFileName());
+                    return true;
+                }
+                index ++;
+            }
+            return false;
 
         } catch (IOException | ClassNotFoundException e) {
             return false;
         }
     }
     /**
-     * This method search for a RawAthlete by its unique id and replace irs race number with the one passed with
-     * the newNumber parameter.
-     * @param id the unique RawAthlete's id
-     * @param newNumber the new race number for RawAthlete
+     * This method persists all changes made to the RawCategory instance
+     * @param rawCategory the updated RawCategory instance
      * @return true if operation was successful otherwise false
      */
-    public boolean changeRaceNumber(Long id, String newNumber) {
+    public boolean updateRawCategory(RawCategory rawCategory) {
         try {
             StartList startList = serializer.deserialize(getFileName());
-
-            for (RawAthlete raw : startList.getRawAthletes())
-                if(raw.getIdAthlete() == id)
-                    raw.setRaceNumber(newNumber);
-
-            serializer.serialize(startList, getFileName());
-            return true;
+            var index = 0;
+            List<RawCategory> rawCategories = startList.getRawCategories();
+            for (RawCategory raw : rawCategories) {
+                if (raw.getIdCategory() == rawCategory.getIdCategory().longValue()) {
+                    rawCategories.set(index, rawCategory);
+                    serializer.serialize(startList, getFileName());
+                    return true;
+                }
+                index ++;
+            }
+            return false;
 
         } catch (IOException | ClassNotFoundException e) {
             return false;
         }
     }
 
+    /**** PRIVATE METHODS ****/
     private StartList createStartList() {
         //create a new StartList instance
         System.out.println("[ERROR]org.manca.jakarta.project.service.RaceService.addAthlete:problems to retrieve StartList instance, I try to create a new instance...");

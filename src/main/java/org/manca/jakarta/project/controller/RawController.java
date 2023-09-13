@@ -46,27 +46,20 @@ public class RawController {
     }
 
     @PUT
-    @Path(value = "/change/rn/byrn")
-    public boolean changeRaceNumber(
-            @QueryParam("raceId") Long raceId,
-            @QueryParam("oldNumber") String oldNumber,
-            @QueryParam("newNumber") String newNumber) {
-
+    @Path(value = "/update/raw_athl")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public boolean updateRawAthlete(@QueryParam("raceId") Long raceId,  RawAthlete rawAthlete) {
         rawService.setFileName(raceService.makeName(raceId));
-
-        return rawService.changeRaceNumber(oldNumber, newNumber);
+        return  rawService.updateRawAthlete(rawAthlete);
     }
 
+
     @PUT
-    @Path(value = "/change/rn/byid")
-    public boolean changeRaceNumber(
-            @QueryParam("raceId") Long raceId,
-            @QueryParam("athleteId") Long athleteId,
-            @QueryParam("newNumber") String newNumber) {
-
+    @Path(value = "/update/raw_cat")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public boolean updateRawAthlete(@QueryParam("raceId") Long raceId,  RawCategory rawCategory) {
         rawService.setFileName(raceService.makeName(raceId));
-
-        return rawService.changeRaceNumber(athleteId, newNumber);
+        return  rawService.updateRawCategory(rawCategory);
     }
 
     @GET
