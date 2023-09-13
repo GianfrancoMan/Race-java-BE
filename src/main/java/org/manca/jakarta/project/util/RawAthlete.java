@@ -22,22 +22,22 @@ public class RawAthlete implements Serializable {
     /** idCategory is related to the id of Category Entity */
     private long idCategory;
 
-    /** lapsToRun is the laps total number that the athlete should be performing */
-    private int lapsToRun;
-
     /** timeOnLaps is the list of the athlete's lap times */
     private List<LocalTime> timeOnLaps;
 
     /** state indicates if the athlete has started or not*/
-    private boolean state;
+    private boolean state = false;
 
     // Constructor
+
+    public RawAthlete() {
+    }
+
     public RawAthlete(long idAthlete, String raceNumber, long idCategory) {
         setIdAthlete(idAthlete);
         setRaceNumber(raceNumber);
         setIdCategory(idCategory);
-        setLapsToRun(lapsToRun);
-        this.timeOnLaps= new ArrayList<>(getLapsToRun());
+        this.timeOnLaps= new ArrayList<>();
         setState(false);
     }
 
@@ -60,14 +60,6 @@ public class RawAthlete implements Serializable {
 
     public long getIdCategory() {
         return idCategory;
-    }
-
-    public int getLapsToRun() {
-        return lapsToRun;
-    }
-
-    public void setLapsToRun(int lapsToRun) {
-        this.lapsToRun = lapsToRun;
     }
 
     public void setIdCategory(long idCategory) {
@@ -100,7 +92,6 @@ public class RawAthlete implements Serializable {
                 "idAthlete=" + idAthlete +
                 ", raceNumber='" + raceNumber + '\'' +
                 ", idCategory=" + idCategory +
-                ", lapsToRun=" + lapsToRun +
                 ", timeOnLaps=" + timeOnLaps +
                 ", state=" + state +
                 '}';

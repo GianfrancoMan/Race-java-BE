@@ -17,7 +17,10 @@ public class RawCategory implements Serializable {
     private int lapsNumber;
 
     /** The time at which the athlete belonging to this category start the race */
-    private LocalTime raceStartTime = LocalTime.of(10,0,0);
+    private LocalTime raceStartTime = LocalTime.of(0,0,0);
+
+    public RawCategory() {
+    }
 
     public RawCategory(Long idCategory) {
         this.idCategory = idCategory;
