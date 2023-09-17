@@ -2,11 +2,13 @@ package org.manca.jakarta.project.service;
 
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.QueryParam;
 import org.manca.jakarta.project.dao.AthleteDao;
 import org.manca.jakarta.project.model.Athlete;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalField;
 import java.util.List;
 
 @Stateless
@@ -39,15 +41,15 @@ public class AthleteService {
     }
 
     /**
-     * find all athletes that hav the birthdate equal to the 'birthdate' passed as parameter in the form of a string
-     * return a List of Athlete objects if success else null.
+     * Find all athletes that have the birthdate equal to the 'birthdate' passed as parameter.
+     * @return a List of Athlete objects if success else null.
      */
-    public List<Athlete> findAthletesByBirthDate(String birthdate) {
-        LocalDate birthDate = null;
-        if(birthdate != null) {
+    public List<Athlete> findAthletesByBirthDate(String birthDate) {
+        if(birthDate != null) {
+
+            LocalDate birthdate = LocalDate.parse(birthDate);
             try {
-                birthDate = LocalDate.parse(birthdate);
-                return ad.athletesByDate(birthDate);
+                return ad.athletesByDate(birthdate);
             } catch (DateTimeParseException e) {
                 System.out.println("CUSTOM ERROR: org.manca.jakarta.project.service.AthleteService.findAthletesByBirthDate[Date Parsing Failed]");
                 return null;

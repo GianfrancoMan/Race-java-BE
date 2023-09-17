@@ -129,11 +129,11 @@ public class AthleteDao {
      * instance.
      * Returns a List of Athletes objects if success else null.
      */
-    public List<Athlete> athletesByDate(LocalDate birthdate) {
+    public List<Athlete> athletesByDate(LocalDate birthDate) {
         TypedQuery<Athlete> query = em.createQuery(
                 "SELECT a FROM Athlete a WHERE a.birthDate=:birthdate",
                 Athlete.class);
-        query.setParameter("birthdate", birthdate);
+        query.setParameter("birthdate", birthDate);
         try {
             return query.getResultList();
         }catch (EJBException |NullPointerException e) {

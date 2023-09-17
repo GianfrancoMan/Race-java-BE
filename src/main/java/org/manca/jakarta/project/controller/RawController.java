@@ -23,8 +23,7 @@ public class RawController {
     public List<RawAthlete> getRawByCategory(
             @QueryParam("raceId") Long raceId,
             @QueryParam("categoryId") Long categoryId) {
-        rawService.setFileName(raceService.makeName(raceId));
-        return rawService.findRawAthleteByCategory(categoryId);
+        return rawService.findRawAthleteByCategory(raceId, categoryId);
     }
 
     @GET
@@ -33,24 +32,21 @@ public class RawController {
     public RawAthlete getRawByRaceNumber(
             @QueryParam("raceId") Long raceId,
             @QueryParam("raceNumber") String raceNumber ) {
-        rawService.setFileName(raceService.makeName(raceId));
-        return rawService.findRawAthleteByRaceNumber(raceNumber);
+        return rawService.findRawAthleteByRaceNumber(raceId, raceNumber);
     }
 
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     public List<RawAthlete> getAllRawAthlete(@QueryParam("raceId") Long raceId) {
-        rawService.setFileName(raceService.makeName(raceId));
-        return rawService.findAllRawAthletes();
+        return rawService.findAllRawAthletes(raceId);
     }
 
     @PUT
     @Path(value = "/update/raw_athl")
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean updateRawAthlete(@QueryParam("raceId") Long raceId,  RawAthlete rawAthlete) {
-        rawService.setFileName(raceService.makeName(raceId));
-        return  rawService.updateRawAthlete(rawAthlete);
+        return  rawService.updateRawAthlete(raceId, rawAthlete);
     }
 
 
@@ -58,16 +54,14 @@ public class RawController {
     @Path(value = "/update/raw_cat")
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean updateRawAthlete(@QueryParam("raceId") Long raceId,  RawCategory rawCategory) {
-        rawService.setFileName(raceService.makeName(raceId));
-        return  rawService.updateRawCategory(rawCategory);
+        return  rawService.updateRawCategory(raceId, rawCategory);
     }
 
     @GET
     @Path(value = "all/rawcat")
     @Produces(MediaType.APPLICATION_JSON)
     public List<RawCategory> getAllRawCategory(@QueryParam("raceId") Long raceId) {
-        rawService.setFileName(raceService.makeName(raceId));
-        return rawService.findAllRawCategories();
+        return rawService.findAllRawCategories(raceId);
     }
 
     @GET
@@ -76,9 +70,7 @@ public class RawController {
     public RawCategory getRawCategoryById(
             @QueryParam("raceId") Long raceId,
             @QueryParam("categoryId") Long categoryId) {
-
-        rawService.setFileName(raceService.makeName(raceId));
-        return  rawService.findRawCategoryById(categoryId);
+        return  rawService.findRawCategoryById(raceId, categoryId);
     }
 
 }
