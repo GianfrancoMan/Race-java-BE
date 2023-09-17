@@ -44,6 +44,7 @@ public class CategoryDao {
      */
     public Category update(Category category) {
         Category result= em.find(Category.class, (Long)category.getId());
+        if(this.findById(category.getId()) == null) return null;
         result.setId(category.getId());
         result.setTitle(category.getTitle());
         result.setRaces(category.getRaces());

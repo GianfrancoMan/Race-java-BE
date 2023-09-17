@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.manca.jakarta.project.model.Category;
 import org.manca.jakarta.project.model.Race;
+import org.manca.jakarta.project.service.RaceService;
 import org.manca.jakarta.project.util.RawAthlete;
 import org.manca.jakarta.project.util.RawCategory;
 import org.manca.jakarta.project.util.StartList;
@@ -20,6 +21,9 @@ import java.util.List;
 public class RawService {
     @Inject
     StartListSerializer serializer;
+
+    @Inject
+    RaceService raceService;
     private String fileName;
 
     //GETTER & SETTER start
@@ -138,138 +142,187 @@ public class RawService {
     }
 
     /**
-     *Return a List of RawAthlete instances belonging to a specific Race that have the 'categoryId' attribute that
+     *Return a List of RawAthlete instances belonging to a specific Race identified by the raceId passed, that have the 'categoryId' attribute that
      * matches 'categoryId' passed as parameter
-     * @param categoryId The unique identifier of a specific category
+     * @param raceId the unique identifier of a specific race.
+     * @param categoryId The unique identifier of a specific category.
      * @return a List of RawAthlete instances (will be empty if there are no matches)
      */
-    public List<RawAthlete> findRawAthleteByCategory(Long categoryId){
-        List<RawAthlete> rawAthletes = new ArrayList<>();
-        try {
-            StartList startList = serializer.deserialize(getFileName());
-            for(RawAthlete rawAthlete : startList.getRawAthletes()) {
-                if(rawAthlete.getIdCategory() == categoryId)
-                    rawAthletes.add(rawAthlete);
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            return rawAthletes;
-        }
-        return rawAthletes;
-    }
+    public List<RawAthlete> findRawAthleteByCategory(Long raceId, Long categoryId){
+        if(raceService.entitiesExist(raceId, categoryId)) {
+            List<RawAthlete> rawAthletes = new ArrayList<>();
 
-    /**
-     * Returns the RawAthlete instance belonging to a specific Race that have the raceNumber attribute that matches 'raceNumber' passed as parameter
-     * or null if there are no matches.
-     * @param raceNumber the race number of the RawAthlete to fetch
-     * @return a RawAthlete instance or null if there are no matches.
-     */
-    public RawAthlete findRawAthleteByRaceNumber(String raceNumber) {
-        try {
-            StartList startList = serializer.deserialize(getFileName());
-            for (RawAthlete raw : startList.getRawAthletes()) {
-                if(raw.getRaceNumber().equals(raceNumber)) {
-                    return  raw;
+            this.setFileName(raceService.makeName(raceId));
+
+            try {
+                StartList startList = serializer.deserialize(this.getFileName());
+                for (RawAthlete rawAthlete : startList.getRawAthletes()) {
+                    if (rawAthlete.getIdCategory() == categoryId)
+                        rawAthletes.add(rawAthlete);
                 }
+                return rawAthletes;
+
+            } catch (IOException | ClassNotFoundException e) {
+                return rawAthletes;
             }
-        } catch (IOException | ClassNotFoundException e) {
-            return null;
         }
+
         return null;
     }
 
     /**
-     * This method returns all RawAthlete instances related to start list of currently race.
+     * Returns the RawAthlete instance belonging to a specific Race identified by its race id, that have the raceNumber
+     * attribute that matches 'raceNumber' passed as parameter or null if there are no matches.
+     * @param raceId the unique race id.
+     * @param raceNumber the race number of the RawAthlete to fetch.
+     * @return a RawAthlete instance or null if there are no matches.
+     */
+    public RawAthlete findRawAthleteByRaceNumber(Long raceId, String raceNumber) {
+        if (raceService.entitiesExist(raceId)) {
+            this.setFileName(raceService.makeName(raceId));
+
+            try {
+                StartList startList = serializer.deserialize(getFileName());
+                for (RawAthlete raw : startList.getRawAthletes()) {
+                    if (raw.getRaceNumber().equals(raceNumber)) {
+                        return raw;
+                    }
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * This method returns all RawAthlete instances related to start list of currently race identified by the race id.
+     * @param raceId the unique race id
      * @return A List of RawAthlete instances.
      */
-    public List<RawAthlete>findAllRawAthletes() {
-        try {
-            StartList startList = serializer.deserialize(getFileName());
-            return startList.getRawAthletes();
-        } catch (IOException | ClassNotFoundException e) {
-            return null;
+    public List<RawAthlete>findAllRawAthletes(Long raceId) {
+        if(raceService.entitiesExist(raceId)) {
+            this.setFileName(raceService.makeName(raceId));
+
+            try {
+                StartList startList = serializer.deserialize(getFileName());
+                return startList.getRawAthletes();
+            } catch (IOException | ClassNotFoundException e) {
+                return null;
+            }
         }
+
+        return null;
     }
 
     /**
-     * This method returns all RawAthlete instances related to start list of currently race.
+     * This method returns all RawCategory instances related to start list of currently race identified by its race id.
+     * @param raceId the unique race id.
      * @return A list of RawCategory instances if any otherwise null.
      */
-    public List<RawCategory> findAllRawCategories() {
-        try {
-            StartList startList = serializer.deserialize(getFileName());
-            return startList.getRawCategories();
-        } catch (IOException | ClassNotFoundException e) {
-            return null;
+    public List<RawCategory> findAllRawCategories(Long raceId) {
+        if(raceService.entitiesExist(raceId)) {
+            this.setFileName(raceService.makeName(raceId));
+
+            try {
+                StartList startList = serializer.deserialize(getFileName());
+                return startList.getRawCategories();
+            } catch (IOException | ClassNotFoundException e) {
+                return null;
+            }
         }
+
+        return null;
     }
 
     /**
-     *  This method return an instance of RawCategory in which its unique category id matches the category id passed
-     *  as  parameter
+     *  This method return an instance of RawCategory from the start list of a specific race identified by the raceId
+     *  passed, in which its unique category id matches the category id passed as  parameter.
+     * @param raceId the unique race id.
      * @param categoryId The category id to compare with RawCategory category id
      * @return An RawCategory instance if category ids match otherwise null.
      */
-    public RawCategory findRawCategoryById(Long categoryId) {
-        try {
-            StartList startList = serializer.deserialize(getFileName());
+    public RawCategory findRawCategoryById(Long raceId, Long categoryId) {
+        if (raceService.entitiesExist(raceId, categoryId)) {
+            this.setFileName(raceService.makeName(raceId));
 
-            for(RawCategory raw : startList.getRawCategories())
-                if(raw.getIdCategory() == categoryId.longValue())
-                    return raw;
+            try {
+                StartList startList = serializer.deserialize(getFileName());
 
-        } catch (IOException | ClassNotFoundException e) {
-            return null;
+                for (RawCategory raw : startList.getRawCategories())
+                    if (raw.getIdCategory() == categoryId.longValue())
+                        return raw;
+
+            } catch (IOException | ClassNotFoundException e) {
+                return null;
+            }
         }
+
         return null;
     }
 
     /**
-     * This method persists all changes made to the RawAthlete instance
+     * This method persists all changes made to the start list RawAthlete instance of currently Race identified by its
+     * race id.
+     * @param raceId the unique race id.
      * @param rawAthlete the updated RawAthlete instance
      * @return true if operation was successful otherwise false
      */
-    public boolean updateRawAthlete(RawAthlete rawAthlete) {
-        try {
-            StartList startList = serializer.deserialize(getFileName());
-            var index = 0;
-            List<RawAthlete> rawAthletes = startList.getRawAthletes();
-            for (RawAthlete raw : rawAthletes) {
-                if (raw.getIdAthlete() == rawAthlete.getIdAthlete()) {
-                    rawAthletes.set(index, rawAthlete);
-                    serializer.serialize(startList, getFileName());
-                    return true;
-                }
-                index ++;
-            }
-            return false;
+    public boolean updateRawAthlete(Long raceId, RawAthlete rawAthlete) {
+        if (raceService.entitiesExist(raceId)) {
+            this.setFileName(raceService.makeName(raceId));
 
-        } catch (IOException | ClassNotFoundException e) {
-            return false;
+            try {
+                StartList startList = serializer.deserialize(getFileName());
+                var index = 0;
+                List<RawAthlete> rawAthletes = startList.getRawAthletes();
+                for (RawAthlete raw : rawAthletes) {
+                    if (raw.getIdAthlete() == rawAthlete.getIdAthlete()) {
+                        rawAthletes.set(index, rawAthlete);
+                        serializer.serialize(startList, getFileName());
+                        return true;
+                    }
+                    index++;
+                }
+                return false;
+
+            } catch (IOException | ClassNotFoundException e) {
+                return false;
+            }
         }
+
+        return false;
     }
     /**
-     * This method persists all changes made to the RawCategory instance
+     * This method persists all changes made to the start list RawCategory instance of a race identiefied by its race id.
+     * @param raceId the unique race id.
      * @param rawCategory the updated RawCategory instance
      * @return true if operation was successful otherwise false
      */
-    public boolean updateRawCategory(RawCategory rawCategory) {
-        try {
-            StartList startList = serializer.deserialize(getFileName());
-            var index = 0;
-            List<RawCategory> rawCategories = startList.getRawCategories();
-            for (RawCategory raw : rawCategories) {
-                if (raw.getIdCategory() == rawCategory.getIdCategory().longValue()) {
-                    rawCategories.set(index, rawCategory);
-                    serializer.serialize(startList, getFileName());
-                    return true;
-                }
-                index ++;
-            }
-            return false;
+    public boolean updateRawCategory(Long raceId, RawCategory rawCategory) {
+        if(raceService.entitiesExist(raceId)) {
+            this.setFileName(raceService.makeName(raceId));
 
-        } catch (IOException | ClassNotFoundException e) {
-            return false;
+            try {
+                StartList startList = serializer.deserialize(getFileName());
+                var index = 0;
+                List<RawCategory> rawCategories = startList.getRawCategories();
+                for (RawCategory raw : rawCategories) {
+                    if (raw.getIdCategory() == rawCategory.getIdCategory().longValue()) {
+                        rawCategories.set(index, rawCategory);
+                        serializer.serialize(startList, getFileName());
+                        return true;
+                    }
+                    index++;
+                }
+                return false;
+
+            } catch (IOException | ClassNotFoundException e) {
+                return false;
+            }
         }
+        return false;
     }
 
     /**** PRIVATE METHODS ****/
