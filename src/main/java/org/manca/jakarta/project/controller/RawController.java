@@ -72,5 +72,4 @@ public class RawController {
             @QueryParam("categoryId") Long categoryId) {
         return  rawService.findRawCategoryById(raceId, categoryId);
     }
-
 }
