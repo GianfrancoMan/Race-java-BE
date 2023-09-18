@@ -68,18 +68,18 @@ public class RaceService {
     }
 
     public boolean removeCategoryFromRace(Long raceId, Long categoryId) {
-        boolean removed = false;
-        if(raceId != null && categoryId != null && raceId >= 1 && categoryId >= 1) {
-            removed = rd.findById(raceId) != null;
-            if(removed) {
-                removed = rawService.findRawAthleteByCategory(raceId, categoryId).size() == 0;
-            }
-            if(removed) {
-                removed = rawService.removeRawCategory(categoryId);
-                if(removed)
-                    removed =  rd.removeCategory(raceId, categoryId);
-            }
+        boolean removed = entitiesExist(raceId, categoryId);
+
+        if(removed) {
+            // the category is not removed if athletes in currently race have that category
+            removed = rawService.findRawAthleteByCategory(raceId, categoryId).size() == 0;
         }
+        if(removed) {
+            removed = rawService.removeRawCategory(categoryId);
+            if(removed)
+                removed =  rd.removeCategory(raceId, categoryId);
+        }
+
         return removed;
     }
 
@@ -92,14 +92,13 @@ public class RaceService {
     public boolean removeAthleteFromRace(Long raceId, Long athleteId) {
         boolean removed = false;
 
-        if(raceId != null && athleteId != null && raceId >= 1 && athleteId >= 1) {
-            removed = rd.findById(raceId) != null;
-            if (removed) {
+        removed = this.entitiesExist(raceId, athleteId);
+        if (removed) {
+            removed = rd.removeAthlete(raceId, athleteId);
+
+            if(removed) {
                 rawService.setFileName(this.makeName(raceId));
-                removed = rd.removeAthlete(raceId, athleteId);
-                if(removed) {
-                    removed = rawService.removeRawAthlete(athleteId);
-                }
+                removed = rawService.removeRawAthlete(athleteId);
             }
         }
 

@@ -58,19 +58,19 @@ public class RawService {
     }
     /**
      * Tries to deserialize a StartList object from file related to a raceId,
-     * then look up a specific RawCategoty by its id by  removing it from the
+     * then look up a specific RawCategory by its id by  removing it from the
      * StartList, finally serialize the changed StartList instance.
      * @param categoryId The unique category id
      * @return boolean <strong>true</strong> if deserialization operations were successful otherwise <strong>false</strong>
      */
     public boolean removeRawCategory(Long categoryId) {
-        boolean checkRemoveAthlete = false;
+        boolean checkRemoveCategory = false;
         try {
             StartList startList = serializer.deserialize(getFileName());
             for (var i=0; i<startList.getRawCategories().size(); i++) {
                 RawCategory raw = startList.getRawCategories().get(i);
                 if (raw.getIdCategory() == categoryId.longValue()) {
-                    checkRemoveAthlete = true;
+                    checkRemoveCategory = true;
                     startList.getRawCategories().remove(i);
                     serializer.serialize(startList, getFileName());
                     break;
@@ -78,9 +78,9 @@ public class RawService {
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("org.manca.jakarta.project.service.RaceService.removeAthleteFromRace: Deserialization failed");
-            checkRemoveAthlete = false;
+            checkRemoveCategory = false;
         }
-        return checkRemoveAthlete;
+        return checkRemoveCategory;
     }
 
     /** Implements the code to create StartList instance or retrieve it from serialized StartList objects if it has
@@ -116,7 +116,7 @@ public class RawService {
 
     /**
      * Tries to deserialize a StartList object from file related to a raceId,
-     * then look up a specific RawAthlete by its id by  removing it from the
+     * then look up a specific RawAthlete by its id by removing it from the
      * StartList, finally serialize the changed StartList instance.
      * @param athleteId The unique athlete id
      * @return boolean <strong>true</strong> if deserialization operations were successful otherwise <strong>false</strong>
@@ -295,7 +295,7 @@ public class RawService {
         return false;
     }
     /**
-     * This method persists all changes made to the start list RawCategory instance of a race identiefied by its race id.
+     * This method persists all changes made to the start list RawCategory instance of a race identified by its race id.
      * @param raceId the unique race id.
      * @param rawCategory the updated RawCategory instance
      * @return true if operation was successful otherwise false
