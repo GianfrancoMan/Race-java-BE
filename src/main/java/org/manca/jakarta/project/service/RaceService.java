@@ -36,7 +36,12 @@ public class RaceService {
     }
 
     public boolean addAthlete(Long raceId, Long athleteId, Long categoryID, String raceNumber) {
-        if (this.entitiesExist(raceId, athleteId, categoryID) && raceNumber != null && !raceNumber.equals("")) {
+        if (entityExists(Race.class.getSimpleName(), raceId)
+                && entityExists(Athlete.class.getSimpleName(), athleteId)
+                && entityExists(Category.class.getSimpleName(), categoryID)
+                && raceNumber != null
+                && !raceNumber.equals("")) {
+
             boolean checkAthleteAdded = rd.addAthlete(raceId, athleteId);
             rawService.setFileName(this.makeName(raceId));
             if(checkAthleteAdded) { //only if persistence operation is successful the RawAthlete will be created and added to the StartList instance via serialization and deserialization operations
@@ -50,7 +55,9 @@ public class RaceService {
     }
 
     public boolean addCategory(Long raceId, Long categoryId) {
-        if (this.entitiesExist(raceId, categoryId)) {
+        if (entityExists(Race.class.getSimpleName(), raceId)
+                && entityExists(Category.class.getSimpleName(), categoryId)) {
+
             boolean checkCategoryAdded =  rd.addCategory(raceId, categoryId);
             rawService.setFileName(this.makeName(raceId));
             if(checkCategoryAdded) { //only if persistence operation is successful the RawCategory will be created and added to the StartList instance via serialization and deserialization operations
@@ -68,7 +75,8 @@ public class RaceService {
     }
 
     public boolean removeCategoryFromRace(Long raceId, Long categoryId) {
-        boolean removed = entitiesExist(raceId, categoryId);
+        boolean removed =
+                entityExists(Race.class.getSimpleName(), raceId) && entityExists(Category.class.getSimpleName(), categoryId);
 
         if(removed) {
             // the category is not removed if athletes in currently race have that category
@@ -90,16 +98,15 @@ public class RaceService {
      * @return boolean <strong>true</strong> if operation was successful otherwise <strong>false</strong>
      */
     public boolean removeAthleteFromRace(Long raceId, Long athleteId) {
-        boolean removed = false;
+        boolean removed =  this.entityExists(Athlete.class.getSimpleName(), athleteId);
 
-        removed = this.entitiesExist(raceId, athleteId);
+        if(removed) {
+            rawService.setFileName(this.makeName(raceId));
+            removed = rawService.removeRawAthlete(athleteId);
+        }
+
         if (removed) {
             removed = rd.removeAthlete(raceId, athleteId);
-
-            if(removed) {
-                rawService.setFileName(this.makeName(raceId));
-                removed = rawService.removeRawAthlete(athleteId);
-            }
         }
 
         return removed;
@@ -147,48 +154,26 @@ public class RaceService {
     }
 
     /**
-     * Validate the ids in three steps, first checks that each of them is not null, then checks that each of them
-     * is greater than 0 and finally verify if a Race, an Athlete and a Category with id that is equal to raceId,
-     * athleteId and categoryId exist in the database respectively
-     * @param raceId the unique Race id
-     * @param athleteId the unique Athlete id
-     * @param categoryId the unique Category id
-     * @return true if the ids constraints are respected otherwise false.
-     * @apiNote 2 overload.
+     * Checks if in tha database exists a persisted entity identified by its class name that have the same id passed as
+     * parameter.
+     * @param className the name of the entity class.
+     * @param id the unique id of entity class instance.
+     * @return true if the entity exists in the database otherwise false.
      */
-    public boolean entitiesExist(Long raceId, Long athleteId, Long categoryId) {
-        return  (raceId != null && athleteId != null && categoryId != null) &&
-                (raceId > 0 && athleteId > 0 && categoryId > 0) &&
-                (this.findRaceById(raceId) != null) &&
-                (athleteService.findAthlete(athleteId)!=null) &&
-                (categoryService.findCategoryById(categoryId)!=null);
-    }
+    public boolean entityExists(String className, Long id) {
+        if (id != null && id >= 0 ) {
+            if (className.equals("Race")) {
+                return this.findRaceById(id) != null;
+            }
+            if (className.equals("Athlete")) {
+                return athleteService.findAthlete(id) != null;
+            }
+            if (className.equals("Category")) {
+                return categoryService.findCategoryById(id) != null;
+            }
+        }
 
-    /**
-     * Validate the ids in three steps, first checks that each of them is not null, then checks that each of them
-     * is greater than 0 and finally verify if both Race and Category with id that is equal to raceId and categoryId
-     * exist in the database respectively.
-     * @param raceId the unique Race id
-     * @param categoryId the unique Category id
-     * @return true if the ids constraints are respected otherwise false.
-     * @apiNote 2 overload.
-     */
-    public boolean entitiesExist(Long raceId, Long categoryId) {
-        return  (raceId != null && categoryId != null) &&
-                (raceId > 0 && categoryId > 0) &&
-                (this.findRaceById(raceId) != null) &&
-                (categoryService.findCategoryById(categoryId)!=null);
-    }
-
-    /**
-     * Validate the id in three steps, first checks that it is not null, then checks that it is greater than 0
-     * and finally verify if Race with id that is equal to raceId, exist in the database.
-     * @param raceId the unique Race id
-     * @return true if the id constraints are respected otherwise false.
-     * @apiNote 2 overload.
-     */
-    public boolean entitiesExist(Long raceId) {
-        return  (raceId != null) && (raceId > 0) && (this.findRaceById(raceId) != null);
+        return false;
     }
 
 }

@@ -149,7 +149,9 @@ public class RawService {
      * @return a List of RawAthlete instances (will be empty if there are no matches)
      */
     public List<RawAthlete> findRawAthleteByCategory(Long raceId, Long categoryId){
-        if(raceService.entitiesExist(raceId, categoryId)) {
+        if(raceService.entityExists(Race.class.getSimpleName(), raceId)
+                && raceService.entityExists(Category.class.getSimpleName(), categoryId)) {
+
             List<RawAthlete> rawAthletes = new ArrayList<>();
 
             this.setFileName(raceService.makeName(raceId));
@@ -178,7 +180,7 @@ public class RawService {
      * @return a RawAthlete instance or null if there are no matches.
      */
     public RawAthlete findRawAthleteByRaceNumber(Long raceId, String raceNumber) {
-        if (raceService.entitiesExist(raceId)) {
+        if (raceService.entityExists(Race.class.getSimpleName(), raceId)) {
             this.setFileName(raceService.makeName(raceId));
 
             try {
@@ -202,7 +204,7 @@ public class RawService {
      * @return A List of RawAthlete instances.
      */
     public List<RawAthlete>findAllRawAthletes(Long raceId) {
-        if(raceService.entitiesExist(raceId)) {
+        if(raceService.entityExists(Race.class.getSimpleName(), raceId)) {
             this.setFileName(raceService.makeName(raceId));
 
             try {
@@ -222,7 +224,7 @@ public class RawService {
      * @return A list of RawCategory instances if any otherwise null.
      */
     public List<RawCategory> findAllRawCategories(Long raceId) {
-        if(raceService.entitiesExist(raceId)) {
+        if(raceService.entityExists(Race.class.getSimpleName(), raceId)) {
             this.setFileName(raceService.makeName(raceId));
 
             try {
@@ -244,7 +246,9 @@ public class RawService {
      * @return An RawCategory instance if category ids match otherwise null.
      */
     public RawCategory findRawCategoryById(Long raceId, Long categoryId) {
-        if (raceService.entitiesExist(raceId, categoryId)) {
+        if (raceService.entityExists(Race.class.getSimpleName(), raceId)
+                && raceService.entityExists(Category.class.getSimpleName(), categoryId)) {
+
             this.setFileName(raceService.makeName(raceId));
 
             try {
@@ -270,7 +274,7 @@ public class RawService {
      * @return true if operation was successful otherwise false
      */
     public boolean updateRawAthlete(Long raceId, RawAthlete rawAthlete) {
-        if (raceService.entitiesExist(raceId)) {
+        if (raceService.entityExists(Race.class.getSimpleName(), raceId)) {
             this.setFileName(raceService.makeName(raceId));
 
             try {
@@ -301,7 +305,7 @@ public class RawService {
      * @return true if operation was successful otherwise false
      */
     public boolean updateRawCategory(Long raceId, RawCategory rawCategory) {
-        if(raceService.entitiesExist(raceId)) {
+        if(raceService.entityExists(Race.class.getSimpleName(), raceId)) {
             this.setFileName(raceService.makeName(raceId));
 
             try {
