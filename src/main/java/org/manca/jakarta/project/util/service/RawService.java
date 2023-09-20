@@ -21,7 +21,6 @@ import java.util.List;
 public class RawService {
     @Inject
     StartListSerializer serializer;
-
     @Inject
     RaceService raceService;
     private String fileName;
