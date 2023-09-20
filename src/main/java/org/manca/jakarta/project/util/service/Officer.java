@@ -101,7 +101,7 @@ public class Officer {
                 }
             }
 
-            //set state for RawAthlete related to the categories involved and complete method documentation
+            //set state for RawAthlete related to the categories involved
             for (var rawAthlete : startList.getRawAthletes()) {
                 if(rawAthlete.getIdCategory() == id) {
                     rawAthlete.setState(true);
