@@ -7,7 +7,6 @@ import org.manca.jakarta.project.model.Athlete;
 import org.manca.jakarta.project.model.Category;
 import org.manca.jakarta.project.model.Race;
 import org.manca.jakarta.project.service.RaceService;
-import org.manca.jakarta.project.util.RawAthlete;
 
 import java.util.List;
 
