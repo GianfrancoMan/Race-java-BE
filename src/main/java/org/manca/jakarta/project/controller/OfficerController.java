@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import org.manca.jakarta.project.model.util.DataToStart;
 import org.manca.jakarta.project.util.service.Officer;
@@ -12,10 +13,37 @@ import org.manca.jakarta.project.util.service.Officer;
 public class OfficerController {
     @Inject
     Officer officer;
+
+    /**
+     * Calls Officer startRace method to manage the race start for one or more categories.
+     *
+     * @param dataToStart a DataToStart instance that bring the data to start a race like unique race id and unique
+     *                    category ids.
+     *
+     * @return TRUE if operation was successful otherwise FALSE.
+     */
     @PUT
     @Path(value = "/start")
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean startRace(DataToStart dataToStart) {
         return officer.startRace(dataToStart.getRaceId(), dataToStart.getCategoryIds());
+    }
+
+    /**
+     * Calls Officer method to manage the athlete's passage across the finish line.
+     *
+     * @param raceId the unique id of the affected race
+     *
+     * @param raceNumber thr unique race number of the athlete
+     *
+     * @return the total count of the laps completed by the athlete.
+     */
+    @PUT
+    @Path(value = "/mark")
+    public int markPassage(
+            @QueryParam("raceId") Long raceId,
+            @QueryParam("raceNumber") String raceNumber) {
+
+        return officer.marksAthletePassage(raceId, raceNumber);
     }
 }
