@@ -79,6 +79,12 @@ public class Officer {
                             }
                         }
 
+                        try {
+                            serializer.serialize(startList, rawService.getFileName());
+                        } catch (IOException e) {
+                            return -1;
+                        }
+
                         return raw.getTimeOnLaps().size();
                     }
                 }
