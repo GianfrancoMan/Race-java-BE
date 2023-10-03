@@ -19,12 +19,55 @@ import java.time.LocalTime;
 @ApplicationScoped
 public class Officer {
 
+    private Long raceId = 0L;
+
     @Inject
     RaceService raceService;
     @Inject
     RawService rawService;
     @Inject
     StartListSerializer serializer;
+
+    /**
+     * Set the laps number that the athletes belonging to the category of the race should have tu run.
+     * @param raceId the unique id that identify the race.
+     * @param categoryId the unique id thet identify the category.
+     * @param lapsToRun the laps number to perform.
+     * @return true if operation successful otherwise false
+     * @implNote The operation fails if:<br/>
+     * - One of both raceId or categoryId doesn't match an existing entity.<br/>
+     * - There are no category that match the provided id's category, in the race start-list .
+     */
+    public boolean setCategoryLapsToRun(Long raceId, Long categoryId, int lapsToRun) {
+        boolean check = false;
+        if(raceService.entityExists(Race.class.getSimpleName(), raceId)
+                && raceService.entityExists(Category.class.getSimpleName(), categoryId)) {
+
+            StartList startList = this.startList(raceId);
+            if(startList!=null) {
+                for (RawCategory raw : startList.getRawCategories()) {
+                    if (raw.getIdCategory() == categoryId.longValue()) {
+                        raw.setLapsNumber(lapsToRun);
+                        check = true;
+                        break;
+                    }
+                }
+                if (check) {
+                    try {
+                        serializer.serialize(startList, rawService.getFileName());
+                    } catch (IOException e) {
+                        return false;
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return false;
+    }
 
     /**
      * Try to set the race start time at the current time, for the categories that have the unique id equal to one
@@ -34,7 +77,7 @@ public class Officer {
      * @return true if operation was successful otherwise false.
      */
     public boolean startRace(Long raceId, Long... categoryIds) {
-        if (raceService.entityExists(Race.class.getSimpleName(), raceId)
+        if (this.raceId == 0 && raceService.entityExists(Race.class.getSimpleName(), raceId)
             && this.checkIds(categoryIds)) { //...end check
 
             StartList startList = this.startList(raceId);
@@ -44,6 +87,7 @@ public class Officer {
                 return false;//... end check.
 
             this.setStartTimeByIds(startList, categoryIds);
+            this.raceId = raceId;
             return true;
         }
 
@@ -61,7 +105,7 @@ public class Officer {
      */
     public int marksAthletePassage(Long raceId, String raceNumber) {
 
-        if (raceService.entityExists(Race.class.getSimpleName(), raceId)) {
+        if (this.raceId.longValue() == raceId && raceService.entityExists(Race.class.getSimpleName(), raceId)) {
 
             StartList startList = this.startList(raceId);
 
@@ -69,7 +113,8 @@ public class Officer {
                 for (RawAthlete raw : startList.getRawAthletes()) {
 
                     if(raw.getRaceNumber().equals(raceNumber)) {
-                        raw.addTimeOnLaps(LocalTime.now());
+                        if (raw.isState()) raw.addTimeOnLaps(LocalTime.now());
+                            else return -1;
 
                         //if the athlete has completed all laps that he had to run, his state is set equal to false.
                         for(RawCategory rawCategory : startList.getRawCategories()) {
@@ -93,6 +138,8 @@ public class Officer {
 
         return -1;
     }
+
+    //TODO: add methods to retrieve both overall and category ranking.
 
 
     //******** PRIVATE METHODS *************//

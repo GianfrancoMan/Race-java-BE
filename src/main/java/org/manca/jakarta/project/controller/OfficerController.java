@@ -15,6 +15,23 @@ public class OfficerController {
     Officer officer;
 
     /**
+     * Calls the Officer method to set the laps number to run for a specific category of a specif race
+     * @param raceId the unique id of the race
+     * @param categoryId the unique id of the category
+     * @param lapsToRun the number od the  laps
+     * @return true if operation was successful otherwise false.
+     */
+    @PUT
+    @Path(value = "/laps")
+    public boolean setLapsNumber(
+            @QueryParam("raceId") Long raceId,
+            @QueryParam("categoryId") Long categoryId,
+            @QueryParam("lapsToRun") int lapsToRun) {
+
+        return officer.setCategoryLapsToRun(raceId, categoryId, lapsToRun);
+    }
+
+    /**
      * Calls Officer startRace method to manage the race start for one or more categories.
      *
      * @param dataToStart a DataToStart instance that bring the data to start a race like unique race id and unique
